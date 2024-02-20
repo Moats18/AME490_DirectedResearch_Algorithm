@@ -10,9 +10,6 @@ function matrixSum = calcMatrixSum(xM, Fj)
 %
 % outputs:
 % matrixSum: the sum of all of the matrices corresponding to a given panel
-% 
-% 
-% testing to see if this changes anything
 %
 %
 
