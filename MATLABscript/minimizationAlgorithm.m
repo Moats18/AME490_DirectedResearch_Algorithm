@@ -1,4 +1,4 @@
-function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, e. tol)
+function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, e, tol)
 % 
 % Based on the paper: "Elastic Energy Approximation and Minimization
 % Algorithm for Foldable Meshes" 
@@ -31,7 +31,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, e. to
 % Ropt: array of rotation matrices for minimizes the elastic energy  
 
 % initial values
-err = inf;
+loop = 0; % loop number
 E{1} = 0;
 
 % setting the values of the initial cj and rij vectors
@@ -45,20 +45,104 @@ end
 
 for j = 1:length(J)
     for i = 1:length(Fj{j})
-    E{1} = E{1} + norm(y{i} - cj{j} - Ri*rij{:, i, j})^2;
+    E{1} = E{1} + norm(y(3*i-2:3*i, 1) - cj{j} - Ri*rij{:, i, j})^2;
     end
 end 
 
-while err > tol 
+% defining the first index that is to be compared in the while loop
+% conditional statement
+n = 2;
+E{n} = 0; 
 
+% Calculating the first energy value
+n = length(y);
+lenJ = length(J);
 
+for i = 1:n
+    x = zeros(3, 3*n);
+    x(1:3, 3*i-2:3*i) = eye(3);
+    xM{i} = x;
+end 
+
+% the first minimized rotation matrix
+RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R);
+
+% the first minimized y 
+yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
+
+% the first minimized x 
+xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, A, e);
+
+% Defining the matrix that allows the vector y to be factored out
+% Aij{1, 1} is a 3 by 3*n matrix
+for j = 1:lenJ
+    l = length(Fj{j});
+    sum = (1/l)*calcMatrixSum(xM, Fj(j, :));
+    for i = 1:n
+        Aij{i, j} = xM{i} - sum;
+    end
+end
+
+% Defining the matrix that allows the vector x to be factored out
+% Qij{1, 1} is a 3 by 3*n matrix
+for j = 1:lenJ
+    l = length(Tj{j});
+    sum = (1/l)*calcMatrixSum(xM, Fj(j, :));
+    for i = 1:n
+        Qij{i, j} = xM{i} - sum;
+    end
+end
+
+for j = 1:length(J)
+    for i = 1:length(Fj{j})
+    E{n} = E{n} + norm(Aij{i, j}*yNew - Ri*(Qij{i, j}*xNew))^2;
+    end
+end 
+
+R = Rnew; 
+y = yNew;
+x = xNew;
 
 err = abs(E{n}-E{n-1});
 
+figure()
+% while loop that converges on a minimized energy value
+while err > tol 
+
+Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R);
+yNew = minY(x, y, Fj, Tj, J, Ropt, A, e); 
+xNew = x_minimization(x, yNew, Fj, Tj, J, Ropt, A, e);
+
+for j = 1:length(J)
+    for i = 1:length(Fj{j})
+    E{n} = E{n} + norm(Aij{i, j}*yNew - Ri*(Qij{i, j}*xNew))^2;
+    end
+end 
+
+err = abs(E{n}-E{n-1});
+
+% Updating the values to be used at the beginning of the next loop
+R = Rnew; 
+y = yNew;
+x = xNew;
+
+% showing the results of the algorithm in real time
+disp("-------------------------------------")
+disp("Iteration number ", num2str(loop));
+disp("Current Energy Value: ", num2str(E{n}));
+disp("Current Error Value: ");
+
+% plotting the results of the algorithm in real time
+hold on
+scatter(loop, E{loop+1}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+drawnow; % ensures that the updated point is plotted
+pause(0.1); %pausing for 1/10 of a second
+loop = loop + 1;
 end
 
-
-
+Ropt = R;
+yOpt = y;
+xOpt = x;
 
 end
 

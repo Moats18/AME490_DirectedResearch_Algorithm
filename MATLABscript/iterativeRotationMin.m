@@ -22,6 +22,7 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R)
 %initial values
 Ri = eye(3);
 E{1} = 0;
+yNew = zeros(length(y), 1);
 
 % setting the values of the initial cj and rij vectors
 for j = 1:length(J)
@@ -35,7 +36,7 @@ end
 % calculating the elastic energy based on the initial cj, y, and x values
 for j = 1:length(J)
     for i = 1:length(Fj{j})
-    E{1} = E{1} + norm(y{i} - cj{j} - Ri*rij{:, i, j})^2;
+    E{1} = E{1} + norm(y(3*i-2:3*i, 1) - cj{j} - Ri*rij{:, i, j})^2;
     end
 end 
 
@@ -45,7 +46,7 @@ for i = 1:length(y)
         j = Ti{k};
         sum = cj{j} + R{j}*rij{:, i, j};% need to figure out R{j} vector
     end 
-    yNew{i} = sum/length(Ti);
+    yNew(3*i-2:3*i, 1) = sum/length(Ti);
 end
 
 % updating the value of the center of the panel
@@ -55,7 +56,8 @@ end
 for j = 1:length(J)
     for i = 1:length(y)
         % ***** update y structure***
-       V = rij(i) + cj - y{i}; T = cj -rij(i) - y{i};
+       V = rij{:, i, j} + cj{j} - y(3*i-2, 3*i);
+       T = cj{j} - rij{:, i, j} - y(3*i-2, 3*i);
        Bij{i, j} = [0 V(1) V(2) V(3); T(1) 0 -V(3) V(2); T(2) V(3) 0 -V(1); T(3) -V(2) V(1) 0];
     end
 end
@@ -75,10 +77,13 @@ E{n} = 0;
 
 for j = 1:length(J)
     for i = 1:length(Fj{j})
-    E{n} = E{n} + norm(yNew{i} - cjNew{j} - Rnew{j}*rij{i, j})^2;
+    E{n} = E{n} + norm(yNew(3*i-2:3*i, 1) - cjNew{j} - Rnew{j}*rij{:, i, j})^2;
     end
 end 
 
+R = Rnew; 
+y = yNew;
+cj = cjNew;
 
 while (abs(E{n} - E{n-1}) > tol)
 
@@ -88,7 +93,7 @@ for i = 1:length(y)
         j = Ti{k};
         sum = cj{j} + R{j}*rij{:, i, j};% need to figure out R{j} vector
     end 
-    yNew{i} = sum/length(Ti);
+     yNew(3*i-2:3*i, 1) = sum/length(Ti);
 end
 
 % updating the value of the center of the panel
