@@ -4,29 +4,29 @@ function yMin = minY(x, y, Fj, Tj, J, R, A, e)
 % energy equation into a linear equation that can be solved 
 % relatively easily
 %
-% inputs:
+% Inputs
+%
+% Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
 % e: e is a vector of the rigid lengths between different y coordinates
 %
+% Indexing Inputs:
 % Tj: a cell array of the set of all x's within each panel(the jth panel
 % corresponds to the jth row)
-%
 % x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
 % Fj: a 2D array of the set of all y's within each panel (the jth panel
 % corresponds to the jth row)
-
-% ***** update y structure***
 % y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
 % J: the set of all panels
 % R: a cell array of all of the rotation matrices for each panel
 %
-% outputs:
+% Outputs
 % yMin: y coordinate 2-D array that minizes the elastic energy based on
 % given rigidity constraints   
 
-% Define the matrices that allow the singular vector yi to be converted to
-% a list of vectors called y
 
+% Define the matrices that allow the 3D coord vector yi to be converted to
+% a list of coord vectors called y
 n = length(y);
 lenJ = length(J);
 
@@ -90,12 +90,20 @@ end
 
 % Utilize the rigidity constraint matrix
 % write the final solution using the derived form
+sol = zeros(3*n + length(e), 1);
 
-sol = [kMatrix, A', A, 0] * [B; e];
+% stores the rows and columns of matrix A
+sz = size(A);
+%stores the rows of the matrix 
+rows = sz(1);
+bigMatrix = zeros(3*n+rows, 3*n+rows);
+bigMatrix(1:3*n, 1:3*n) = kMatrix;
+bigMatrix(3*n:3*n+rows, 1:3*n) = A;
+bigMatrix(1:3*n,3*n:3*n+rows) = A';
+sol = bigMatrix\[B; e];
 
 % take the first 3*n by 1 elements which coorespond to the minimized y
 % values
-
 yMin = sol(1:3*n, 1);
 
 end
