@@ -1,16 +1,22 @@
-function Xmin = x_minimization(x, y, Fj, Uj, J, R)
+function Xmin = x_minimization(x, y, Fj, Sj, J, R,U,h)
 %
-%inputs:
+%Inputs:
 %
+% Rigidity Constraints:
+% U: U is a matrix that contains the rigidity constraints such that Ux = h
+% h: h is a vector of the rigid lenghts between different x coordinates\
+%
+% Indexing Inputs:
 % x: x coordinate 2-D array (3*m by 1 where m is the number of indices)
-% Fj: a cell array of the set of all y's wihtin each panel
 % y: y coordinate 2-D array (3*m by 1 where m is the number of indices)
+% Fj: a cell array of the set of all y's wihtin each panel
+% Sj: a cell array of the set of all y's within each panel
 % J: the set of all panels
-% I: the set of all vertices
 % R: a cell array of all of the rotation matrices for each panel
-% Uj: a cell array of the set of all y's within each panel
-% outputs:
-%Xmin:
+% 
+% Outputs:
+%Xmin: x coordinate(2-D array) that minimizes the energy based on given
+%constraints
 
 % Define the matrices that allow the singular vector xi to be converted to
 % a list of vectors called x
@@ -28,36 +34,65 @@ end
 
 for j = 1:len(J)
     l = length(Fj{j});
-    part_sum = (R{j}/l)*x_calcMatrixSum(zM, Fj{j});
+    part_sum = (R{j}/l)*calcMatrixSum(zM, Fj{j});
     for i = 1:m
         Gij{i,j} = R{j}*zM{i} - part_sum;
     end
 end
 
 % pos vectors with respect to the center of the panel
+dij = zeros(3*m,1,lenJ);
 for j = 1:lenJ
-[~, dij{:, j}] = x_centerOfPanel(Uj{j}, y);
+[~, dij{:,1,j}] = centerOfPanel(Sj(j,:), y);
 end
 
 %calculation of m vector
-mvector = zeros(3,1,15);
+mvector = zeros(3*m,1);
 for len = 1:lenJ
-    for i = length(Fj{j})
-        p = Fj{j};
+    for i = length(Fj(j,:))
+        p = Fj(j,:);
         q = p{i};
-        mvector = mvector + 2*Gij{q,j}'*dij{i,j};
+        mvector = mvector + Gij{q,1,j}'*dij{i,j};
     end
 end
 
 %calculation of gmatrix (3m by 3m)
 gmatrix = zeros(3*m,3*m);
 for j = 1:lenJ
-    for i=length(Fj{j})
-        p = Fj{j};
+    for i=length(Fj(j,:))
+        p = Fj(j,:);
         q = p{i};
-        gmatrix = gmatrix + 2*Gij{q,j}*Gij{q,j};
+        gmatrix = gmatrix + 2*Gij{q,j}'*Gij{q,j};
     end
 end
+
+% M is a 1 by 3*m vector (using the dot product function in MATLAB
+% eliminates the need to utilize the tranpose
+M = -2*mVector; 
+
+%calculating d scalar 
+dscalar = 0;
+for j = 1:lenJ
+    for i=length(Fj(j,:))
+        p = Fj(j,:);
+        q = p{i};
+        dscalar = dscalar + norm(dij(q,1,p))^2;
+    end
 end
+% Utilize the rigidity constraint matrix
+% write the final solution using the derived form
+sol = zeros(3*n + length(h),1);
 
+%stores rows and columns of the matrix U
+siz = size(U);
+%stores the rows of the matrix 
+row = siz(1);
+big_matrix = zeros(3*m+row,3*m+row);
+big_matrix(1:3*m,1:3*m) = gmatrix;
+big_matrix(3*m:3*m+row,1:3*m) = U;
+big_matrix(1:3*m,3*m:3*m+row) = U';
+sol = big_matrix\[M;h];
 
+% taking the first 3*m by 1 element that corresponds to the final minimized
+% X value
+Xmin = sol(1:3*m,1);
