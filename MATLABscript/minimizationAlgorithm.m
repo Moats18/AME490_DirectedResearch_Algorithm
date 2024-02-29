@@ -16,7 +16,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U
 % h: h is a vector of the rigid lenghts between different x coordinates\
 %
 % Indexing Inputs:
-% Tj: a cell array of the set of all x's within each panel(the jth panel
+% Tj: a cell array of the set of all x's within each panel (the jth panel
 % corresponds to the jth row)
 % Ti: the set of all panels associated with index i
 % x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
@@ -38,6 +38,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U
 % initial values
 loop = 0; % loop number
 E{1} = 0;
+rij = zeros(length(Tj), 1, length(J));
 
 % setting the values of the initial cj and rij vectors
 for j = 1:length(J)
@@ -45,12 +46,12 @@ for j = 1:length(J)
 [cj{j}, ~] = centerOfPanel(Fj{j}, y);
 
 % pos vectors with respect to the center of the panel
-[~, rij{:, :, j}] = centerOfPanel(Tj{j}, x);
+[~, rij(:, :, j)] = centerOfPanel(Tj{j}, x);
 end 
 
 for j = 1:length(J)
     for i = 1:length(Fj{j})
-    E{1} = E{1} + norm(y(3*i-2:3*i, 1) - cj{j} - Ri*rij{:, i, j})^2;
+    E{1} = E{1} + norm(y(3*i-2:3*i, 1) - cj{j} - Ri*rij(:, i, j))^2;
     end
 end 
 
@@ -135,7 +136,7 @@ x = xNew;
 disp("-------------------------------------")
 disp("Iteration number ", num2str(loop));
 disp("Current Energy Value: ", num2str(E{n}));
-disp("Current Error Value: ");
+disp("Current Error Value: ", num2str(err));
 
 % plotting the results of the algorithm in real time
 hold on

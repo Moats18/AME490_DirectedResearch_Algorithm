@@ -5,7 +5,7 @@ function [cj, rij] = centerOfPanel(Fc, coord)
 %
 % Outputs:
 % cj: the center of the panel 
-% rij: the coordinate vectors with respect to the center of the panel
+% rij: 3 dimensional array containing the coordinate vectors with respect to the center of the panel
 
 len = length(Fc);
 rij = zeros(3*len, 1);

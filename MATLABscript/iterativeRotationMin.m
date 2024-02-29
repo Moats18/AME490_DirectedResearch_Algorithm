@@ -11,7 +11,7 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R)
 % Fj: a cell array of the set of all y's within each panel 
 % y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
 %
-% Ti: the set of all panels associated with index i
+% Ti: a cell array containing the set of all panels associated with index i
 % J: the set of all panels
 % tol: the tolerance that the convergence has to be less than
 % R: a cell array of the initial rotation matrix for each panel 
