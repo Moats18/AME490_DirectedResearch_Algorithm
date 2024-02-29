@@ -14,10 +14,11 @@
 
 % Initial x-values
 
-%x1 = [];
-%x6 = [];
-x1 = randi(100,3,1);
-x6 = randi(100,3,1);
+x{1} = [];
+x{6} = [];
+for i=2:5
+    x{i} = randi(100,3,1);
+end
 
 % x rigidity constraints- define as 
 A = {-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3);
@@ -25,12 +26,8 @@ A = {-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3);
     zeros(3,3),-eye(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3);
     zeros(3,3),zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3);
     zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),-eye(3,3)};
-for i=1:6
-    x{i}=eye(3,1);
-    e{i}=eye(3,1);
-end
-
-% Initial y-values
+    
+% Initial y-valudes
 y1 = [];
 y6 = [];
 
