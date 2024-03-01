@@ -14,6 +14,8 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R)
 % Ti: a cell array containing the set of all panels associated with index i
 % J: the set of all panels
 % tol: the tolerance that the convergence has to be less than
+%
+%
 % R: a cell array of the initial rotation matrix for each panel 
 %
 % outputs:
@@ -23,28 +25,30 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R)
 Ri = eye(3);
 E{1} = 0;
 yNew = zeros(length(y), 1);
+rij = zeros(3*length(Tj), 1, length(J));
 
 % setting the values of the initial cj and rij vectors
 for j = 1:length(J)
 % center of the panel calculation based on initial y vector
-[cj{j}, ~] = centerOfPanel(Fj{j}, y);
+[cj{j}, ~] = centerOfPanel(Fj(:, :, j), y);
 
 % pos vectors with respect to the center of the panel
-[~, rij{:, :, j}] = centerOfPanel(Tj{j}, x);
+[~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), x);
 end 
 
 % calculating the elastic energy based on the initial cj, y, and x values
 for j = 1:length(J)
-    for i = 1:length(Fj{j})
-    E{1} = E{1} + norm(y(3*i-2:3*i, 1) - cj{j} - Ri*rij{:, i, j})^2;
+    for i = 1:length(Fj(:, :, j))
+    k = Fj(:, i, j); 
+    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - Ri*rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 
 % setting the new values of the y position vector
-for i = 1:length(y)   
-    for k = 1:length(Ti)
-        j = Ti{k};
-        sum = cj{j} + R{j}*rij{:, i, j};% need to figure out R{j} vector
+for i = 1:(length(y)/3)  
+    for k = 1:length(Ti(i))
+        j = Ti(i, k);
+        sum = cj{j} + R{j}*rij(3*i-2:3*i, 1, j);% need to figure out R{j} vector
     end 
     yNew(3*i-2:3*i, 1) = sum/length(Ti);
 end

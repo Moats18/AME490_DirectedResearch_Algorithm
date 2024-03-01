@@ -71,15 +71,13 @@ F2 = [2, 3, 4, 5];
 T1 = [1, 2, 5, 6];
 T2 = [2, 3, 4, 5];
 
-%initializing Tj
-Tj = zeros(3*length(T1), 1, length(J));
+% a 3-d array that contains the index set of x coordinates within a given
+% panel j
+Tj = zeros(1, length(T1), length(J));
+Tj(1, :, 1) = T1;
+Tj(1, :, 2) = T2;
 
-% assigning the coordinates to each vector Tj
-for i = 1:length(T1)
-k = T1(i);
-Tj{1} = ;
-end
-
+Fj = Tj;
 
 % determine the index set for each index
 t1 = 1;
@@ -99,5 +97,5 @@ tolR = 0.1;
 % determine the initial tolerance for the entire algorithm minimization
 tol = 0.1;
 
-[yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, U, h, e, tol, tolR);
+[yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR);
 

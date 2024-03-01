@@ -1,7 +1,8 @@
 function [cj, rij] = centerOfPanel(Fc, coord)
 % Inputs:
-% Fc: The set of all coordinates (x or y) within a panel 
-% coord: 2-D array of all of the x/y coordinates (3*n by 1 where n is the number of indices)
+% Fc: The set of all of the index (as opposed to position) of coordinates (x or y) within a panel
+% 1 by 4 2D array
+% coord: 2D array of all of the x/y coordinates (3*n by 1 where n is the number of indices)
 %
 % Outputs:
 % cj: the center of the panel 

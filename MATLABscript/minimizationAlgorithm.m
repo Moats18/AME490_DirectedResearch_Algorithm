@@ -1,4 +1,4 @@
-function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR)
+function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, Ri, A, U, h, e, tol, tolR)
 % 
 % Based on the paper: "Elastic Energy Approximation and Minimization
 % Algorithm for Foldable Meshes" 
@@ -16,8 +16,8 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U
 % h: h is a vector of the rigid lenghts between different x coordinates\
 %
 % Indexing Inputs:
-% Tj: a cell array of the set of all x's within each panel (the jth panel
-% corresponds to the jth row)
+% Tj: a 3D array of the set of all x's within each panel 
+% Tj size is 1 by verticesPerPanel  by nuPanels;
 % Ti: the set of all panels associated with index i
 % x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
 % Fj: a 2D array of the set of all y's within each panel (the jth panel
@@ -38,20 +38,21 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U
 % initial values
 loop = 0; % loop number
 E{1} = 0;
-rij = zeros(length(Tj), 1, length(J));
+rij = zeros(3*length(Tj), 1, length(J));
 
 % setting the values of the initial cj and rij vectors
 for j = 1:length(J)
 % center of the panel calculation based on initial y vector
-[cj{j}, ~] = centerOfPanel(Fj{j}, y);
+[cj{j}, ~] = centerOfPanel(Fj(:, :, j), y);
 
 % pos vectors with respect to the center of the panel
-[~, rij(:, :, j)] = centerOfPanel(Tj{j}, x);
+[~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), x);
 end 
 
 for j = 1:length(J)
-    for i = 1:length(Fj{j})
-    E{1} = E{1} + norm(y(3*i-2:3*i, 1) - cj{j} - Ri*rij(:, i, j))^2;
+    for i = 1:length(Fj(:, :, j))
+    k = Fj(:, i, j);
+    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - Ri*rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 
@@ -65,13 +66,13 @@ n = length(y);
 lenJ = length(J);
 
 for i = 1:n
-    x = zeros(3, 3*n);
-    x(1:3, 3*i-2:3*i) = eye(3);
-    xM{i} = x;
+    xX = zeros(3, 3*n);
+    xX(1:3, 3*i-2:3*i) = eye(3);
+    xM{i} = xX;
 end 
 
 % the first minimized rotation matrix
-RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
+RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, Ri);
 
 % the first minimized y 
 yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
