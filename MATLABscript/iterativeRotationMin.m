@@ -14,15 +14,12 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tol, R)
 % Ti: a cell array containing the set of all panels associated with index i
 % J: the set of all panels
 % tol: the tolerance that the convergence has to be less than
-%
-%
 % R: a cell array of the initial rotation matrix for each panel 
 %
 % outputs:
 % Ropt: a cell array of the rotation matrices that minimize the elastic energy 
 
 %initial values
-Ri = eye(3);
 E{1} = 0;
 yNew = zeros(length(y), 1);
 rij = zeros(3*length(Tj), 1, length(J));
@@ -39,40 +36,47 @@ end
 % calculating the elastic energy based on the initial cj, y, and x values
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    k = Fj(:, i, j); 
-    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - Ri*rij(3*i-2:3*i, 1, j))^2;
+    k = Fj(:, i, j);
+    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 
 % setting the new values of the y position vector
 for i = 1:(length(y)/3)  
-    for k = 1:length(Ti(i))
-        j = Ti(i, k);
-        sum = cj{j} + R{j}*rij(3*i-2:3*i, 1, j);% need to figure out R{j} vector
+    for k = 1:length(Ti{i})
+        j = Ti{i};
+        l = j(k);
+        for m = 1:length(Fj(:, :, l))
+        sum = cj{l} + R{l}*rij(3*m-2:3*m, 1, l);% need to figure out R{j} vector
+        end 
     end 
     yNew(3*i-2:3*i, 1) = sum/length(Ti);
 end
 
 % updating the value of the center of the panel
-[cjNew{j}, ~] = centerOfPanel(Fj{j}, yNew);
+for j = 1:length(J)
+[cjNew{j}, ~] = centerOfPanel(Fj(:, :, j), yNew);
+end
 
 % creation of the rotation matrix Bij
 for j = 1:length(J)
-    for i = 1:length(y)
-        % ***** update y structure***
-       V = rij{:, i, j} + cj{j} - y(3*i-2, 3*i);
-       T = cj{j} - rij{:, i, j} - y(3*i-2, 3*i);
+    for i = 1:length(Fj(:, :, j))
+       V = rij(3*i-2:3*i, 1, j) + cj{j} - y(3*i-2:3*i, 1);
+       T = cj{j} - rij(3*i-2:3*i, 1, j) - y(3*i-2:3*i, 1);
        Bij{i, j} = [0 V(1) V(2) V(3); T(1) 0 -V(3) V(2); T(2) V(3) 0 -V(1); T(3) -V(2) V(1) 0];
     end
 end
 
 for j = 1:length(J)
-   size = length(Fj{j});
-    for i = 1:size
+Bj{j} = zeros(4);
+end
+
+for j = 1:length(J)
+    for i = 1:length(Fj(:, :, j))
     Bj{j} = Bj{j} + Bij{i, j};
     end 
     [Vec ,~] = eig(Bj{j}'*Bj{j});
-    pj{j} = Vec(:, 1);
+    pj{j} = Vec(:, 1)';
     Rnew{j} = quat2rotm(pj{j});
 end
 
@@ -80,8 +84,9 @@ n = 2;
 E{n} = 0; 
 
 for j = 1:length(J)
-    for i = 1:length(Fj{j})
-    E{n} = E{n} + norm(yNew(3*i-2:3*i, 1) - cjNew{j} - Rnew{j}*rij{:, i, j})^2;
+    for i = 1:length(Fj(:, :, j))
+    k = Fj(:, i, j);
+    E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j}- Rnew{j} - rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 
@@ -92,33 +97,41 @@ cj = cjNew;
 while (abs(E{n} - E{n-1}) > tol)
 
 % setting the new values of the y position vector
-for i = 1:length(y)   
-    for k = 1:length(Ti)
-        j = Ti{k};
-        sum = cj{j} + R{j}*rij{:, i, j};% need to figure out R{j} vector
+for i = 1:(length(y)/3)  
+    for k = 1:length(Ti{i})
+        j = Ti{i};
+        l = j(k);
+        for m = 1:length(Fj(:, :, l))
+        sum = cj{l} + R{l}*rij(3*m-2:3*m, 1, l);% need to figure out R{j} vector
+        end 
     end 
-     yNew(3*i-2:3*i, 1) = sum/length(Ti);
+    yNew(3*i-2:3*i, 1) = sum/length(Ti);
 end
 
 % updating the value of the center of the panel
-[cjNew{j}, ~] = centerOfPanel(Fj{j}, yNew);
+for j = 1:length(J)
+[cjNew{j}, ~] = centerOfPanel(Fj(:, :, j), yNew);
+end
 
 % creation of the rotation matrix Bij
 for j = 1:length(J)
-    for i = 1:length(y)
-       V = rij{:, i, j} + cj - y{i}; 
-       T = cj -rij{:, i, j} - y{i};
+    for i = 1:length(Fj(:, :, j))
+       V = rij(3*i-2:3*i, 1, j) + cj{j} - y(3*i-2:3*i, 1);
+       T = cj{j} - rij(3*i-2:3*i, 1, j) - y(3*i-2:3*i, 1);
        Bij{i, j} = [0 V(1) V(2) V(3); T(1) 0 -V(3) V(2); T(2) V(3) 0 -V(1); T(3) -V(2) V(1) 0];
     end
 end
 
 for j = 1:length(J)
-   size = length(Fj{j});
-    for i = 1:size
+Bj{j} = zeros(4);
+end
+
+for j = 1:length(J)
+    for i = 1:length(Fj(:, :, j))
     Bj{j} = Bj{j} + Bij{i, j};
     end 
     [Vec ,~] = eig(Bj{j}'*Bj{j});
-    pj{j} = Vec(:, 1);
+    pj{j} = Vec(:, 1)';
     Rnew{j} = quat2rotm(pj{j});
 end
 
@@ -126,8 +139,9 @@ n = n+1;
 E{n} = 0; 
 
 for j = 1:length(J)
-    for i = 1:length(Fj{j})
-    E{n} = E{n} + norm(yNew{i} - cjNew{j} - Rnew{j}*rij{:, i, j})^2;
+    for i = 1:length(Fj(:, :, j))
+    k = Fj(:, i, j);
+    E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j}- Rnew{j} - rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 

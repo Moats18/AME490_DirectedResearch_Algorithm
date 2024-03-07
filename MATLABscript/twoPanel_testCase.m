@@ -89,7 +89,9 @@ t6 = 1;
 Ti = {t1, t2, t3, t4, t5, t6}; %the set of all panels associated with index i
 
 % Initial R 
-R = eye(3); % identity matrix
+for j = 1:length(J)
+R{j} = eye(3); % identity matrix
+end
 
 % determine the initial tolerance for the rotation minimization
 tolR = 0.1;

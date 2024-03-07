@@ -1,4 +1,4 @@
-function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, Ri, A, U, h, e, tol, tolR)
+function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR)
 % 
 % Based on the paper: "Elastic Energy Approximation and Minimization
 % Algorithm for Foldable Meshes" 
@@ -52,7 +52,7 @@ end
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
-    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - Ri*rij(3*i-2:3*i, 1, j))^2;
+    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 
@@ -72,7 +72,7 @@ for i = 1:n
 end 
 
 % the first minimized rotation matrix
-RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, Ri);
+RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 
 % the first minimized y 
 yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
