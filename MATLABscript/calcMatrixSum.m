@@ -11,7 +11,6 @@ function matrixSum = calcMatrixSum(xM, Fj)
 % outputs:
 % matrixSum: the sum of all of the matrices corresponding to a given panel
 %
-%
 
 n = length(xM);
 sum = zeros(3, 3*n);

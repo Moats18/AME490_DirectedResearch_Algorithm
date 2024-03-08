@@ -1,4 +1,4 @@
-function Xmin = x_minimization(x, y, Fj, Sj, J, R,U,h)
+function Xmin = x_minimization(x, y, Fj, Sj, J, R, U,h)
 %
 %Inputs:
 %
@@ -26,14 +26,13 @@ lenJ = length(J);
 mm = length(Fj);
 
 for i = 1:(m/3)
-    x = zeros(3,m);
-    x(1:3,3*i-2:3*i) = eye(3);
-    zM{i} = x;
+    x1= zeros(3,m);
+    x1(1:3,3*i-2:3*i) = eye(3);
+    zM{i} = x1;
 end
 
 % Defining the matrix that allows the vector x to be factored out
 % Gij{1, 1} is a 3 by n matrix
-
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     part_sum = (R{j}/l)*calcMatrixSum(zM, Fj(:, :, j));
@@ -45,13 +44,9 @@ end
 % pos vectors with respect to the center of the panel
 dij = zeros(3*mm,1,lenJ);
 for j = 1:lenJ
-[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j), y);
+[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j), x);
 end
 
-R{1}
-Gij{1, 1}
-dij(1:3, 1, 1)
-dij(1:3, 1, 1)'*R{1}'*Gij{1, 1}
 %calculation of m vector
 mvector = zeros(m,1);
 for len = 1:lenJ
@@ -97,8 +92,6 @@ big_matrix = zeros(m+row,m+row);
 big_matrix(1:m,1:m) = gmatrix;
 big_matrix(m+1:m+row,1:m) = U;
 big_matrix(1:m,m+1:m+row) = U';
-size(M)
-size(h)
 sol = big_matrix\[M;h];
 
 % taking the first 3*m by 1 element that corresponds to the final minimized

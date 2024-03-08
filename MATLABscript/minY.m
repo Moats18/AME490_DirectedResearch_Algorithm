@@ -23,10 +23,9 @@ function yMin = minY(x, y, Fj, Tj, J, R, A, e)
 % Outputs
 % yMin: y coordinate 2-D array that minizes the elastic energy based on
 % given rigidity constraints   
-
-
 % Define the matrices that allow the 3D coord vector yi to be converted to
 % a list of coord vectors called y
+
 n = length(y);
 lenJ = length(J);
 nn = length(Fj);
@@ -66,10 +65,6 @@ for j = 1:lenJ
 [~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), x);
 end 
 
-R{1}
-Aij{1, 1}
-rij(1:3, 1, 1)
-rij(1:3, 1, 1)'*R{1}'*Aij{1, 1}
 % calculation of the b vector
 bVector = zeros(n, 1);
 for j = 1:lenJ
@@ -79,7 +74,6 @@ for j = 1:lenJ
         bVector = bVector + (rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{k, j})'; 
     end
 end
-size(bVector)
 
 % B is a 1 by 3*n vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
@@ -107,8 +101,6 @@ bigMatrix = zeros(n+rows, n+rows);
 bigMatrix(1:n, 1:n) = kMatrix;
 bigMatrix(n+1:n+rows, 1:n) = A;
 bigMatrix(1:n,n+1:n+rows) = A';
-size(B)
-size(e)
 sol = bigMatrix\[B; e];
 
 % take the first 3*n by 1 elements which coorespond to the minimized y

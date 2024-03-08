@@ -83,9 +83,9 @@ xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, U, h);
 % Defining the matrix that allows the vector y to be factored out
 % Aij{1, 1} is a 3 by 3*n matrix
 for j = 1:lenJ
-    l = length(Fj{j});
-    sum = (1/l)*calcMatrixSum(xM, Fj(j, :));
-    for i = 1:n
+    l = length(Fj(:, :, j));
+    sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
+    for i = 1:n/3
         Aij{i, j} = xM{i} - sum;
     end
 end
@@ -93,16 +93,16 @@ end
 % Defining the matrix that allows the vector x to be factored out
 % Qij{1, 1} is a 3 by 3*n matrix
 for j = 1:lenJ
-    l = length(Tj{j});
-    sum = (1/l)*calcMatrixSum(xM, Fj(j, :));
+    l = length(Fj(:, :, j));
+    sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
     for i = 1:n
         Qij{i, j} = xM{i} - sum;
     end
 end
 
 for j = 1:length(J)
-    for i = 1:length(Fj{j})
-    E{n} = E{n} + norm(Aij{i, j}*yNew - Ri*(Qij{i, j}*xNew))^2;
+    for i = 1:length(Fj(:, :, j))
+    E{n} = E{n} + norm(Aij{i, j}*yNew - Ri{j}*(Qij{i, j}*xNew))^2;
     end
 end 
 
@@ -121,7 +121,7 @@ yNew = minY(x, y, Fj, Tj, J, Ropt, A, e);
 xNew = x_minimization(x, yNew, Fj, Tj, J, Ropt, U, h);
 
 for j = 1:length(J)
-    for i = 1:length(Fj{j})
+    for i = 1:length(Fj(:, :, j))
     E{n} = E{n} + norm(Aij{i, j}*yNew - Ri*(Qij{i, j}*xNew))^2;
     end
 end 
