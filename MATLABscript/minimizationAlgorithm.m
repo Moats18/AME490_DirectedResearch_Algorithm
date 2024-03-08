@@ -75,7 +75,7 @@ end
 RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 
 % the first minimized y 
-yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
+yNew = minY(x, y, Fj, Tj, J, R, A, e);
 
 % the first minimized x 
 xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, U, h);

@@ -15,6 +15,7 @@ sum = zeros(3, 1);
 num = 0;
 
 for i = 1:length(Fc)
+
 sum = sum + coord(3*Fc(i)-2:3*Fc(i), 1);
 num = num + 1;
 end

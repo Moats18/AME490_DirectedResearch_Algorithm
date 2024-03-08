@@ -32,7 +32,7 @@ end
 
 % Defining the matrix that allows the vector x to be factored out
 
-for j = 1:len(J)
+for j = 1:lenJ
     l = length(Fj{j});
     part_sum = (R{j}/l)*calcMatrixSum(zM, Fj{j});
     for i = 1:m

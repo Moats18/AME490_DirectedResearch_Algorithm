@@ -16,9 +16,9 @@ function matrixSum = calcMatrixSum(xM, Fj)
 n = length(xM);
 sum = zeros(3, 3*n);
 
-for k = 1:length(Fj) 
-    p = Fj{k};
-    sum = sum + xM{p};
+for k = 1:length(Fj)
+   p = Fj(k);
+   sum = sum + xM{p};
 end
 
 matrixSum = sum; 
