@@ -58,15 +58,15 @@ end
 
 % defining the first index that is to be compared in the while loop
 % conditional statement
-n = 2;
-E{n} = 0; 
+num = 2;
+E{num} = 0; 
 
 % Calculating the first energy value
 n = length(y);
 lenJ = length(J);
 
-for i = 1:n
-    xX = zeros(3, 3*n);
+for i = 1:n/3
+    xX = zeros(3, n);
     xX(1:3, 3*i-2:3*i) = eye(3);
     xM{i} = xX;
 end 
@@ -75,7 +75,7 @@ end
 RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 
 % the first minimized y 
-yNew = minY(x, y, Fj, Tj, J, R, A, e);
+yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
 
 % the first minimized x 
 xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, U, h);
@@ -95,24 +95,25 @@ end
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
-    for i = 1:n
+    for i = 1:n/3
         Qij{i, j} = xM{i} - sum;
     end
 end
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    E{n} = E{n} + norm(Aij{i, j}*yNew - Ri{j}*(Qij{i, j}*xNew))^2;
+    f = Fj(:, :, j);
+    k = f(i);
+    E{num} = E{num} + norm(Aij{k, j}*yNew - RiOpt{j}*(Qij{k, j}*xNew))^2;
     end
 end 
 
-R = Rnew; 
+R = RiOpt; 
 y = yNew;
 x = xNew;
 
-err = abs(E{n}-E{n-1});
+err = abs(E{num}-E{num-1});
 
-figure()
 % while loop that converges on a minimized energy value
 while err > tol 
 
@@ -122,14 +123,16 @@ xNew = x_minimization(x, yNew, Fj, Tj, J, Ropt, U, h);
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    E{n} = E{n} + norm(Aij{i, j}*yNew - Ri*(Qij{i, j}*xNew))^2;
+    f = Fj(:, :, j);
+    k = f(i);
+    E{num} = E{num} + norm(Aij{k, j}*yNew - ROpt*(Qij{k, j}*xNew))^2;
     end
 end 
 
-err = abs(E{n}-E{n-1});
+err = abs(E{num}-E{num-1});
 
 % Updating the values to be used at the beginning of the next loop
-R = Rnew; 
+R = Ropt; 
 y = yNew;
 x = xNew;
 
@@ -140,11 +143,11 @@ disp("Current Energy Value: ", num2str(E{n}));
 disp("Current Error Value: ", num2str(err));
 
 % plotting the results of the algorithm in real time
-hold on
-scatter(loop, E{loop+1}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
-drawnow; % ensures that the updated point is plotted
-pause(0.1); %pausing for 1/10 of a second
-loop = loop + 1;
+%hold on
+%scatter(loop, E{loop+1}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+%drawnow; % ensures that the updated point is plotted
+%pause(0.1); %pausing for 1/10 of a second
+%loop = loop + 1;
 end
 
 Ropt = R;
