@@ -42,8 +42,9 @@ end
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
-    for i = 1:n/3
-        Aij{i, j} = xM{i} - sum;
+    for i = 1:length(Fj(:, :, j))
+        k = Fj(:, i, j);
+        Aij{i, j} = xM{k} - sum;
     end
 end
 
@@ -51,12 +52,14 @@ end
 kMatrix = zeros(n, n);
 
 for j = 1:lenJ
-    for i = length(Fj(:, :, j))
-    f = Fj(:, :, j);
-    k = f(i);
-    kMatrix = kMatrix + 2*Aij{k, j}'*Aij{k, j};
+    for i = 1:length(Fj(:, :, j))
+        Aij{i, j}'*Aij{i, j}
+    kMatrix = kMatrix + 2*Aij{i, j}'*Aij{i, j};
     end
 end
+
+nspace = null(kMatrix);
+size(nspace);
 
 % pos vectors with respect to the center of the panel for all panels
 rij = zeros(3*nn, 1, lenJ);
@@ -69,15 +72,17 @@ end
 bVector = zeros(n, 1);
 for j = 1:lenJ
     for i = length(Fj(:, :, j))
-        f = Fj(:, :, j);
-        k = f(i);
-        bVector = bVector + (rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{k, j})'; 
+        bVector = bVector + (rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'; 
     end
 end
+
+size(bVector)
 
 % B is a 1 by 3*n vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
 B = -2*bVector; 
+
+dot(bVector,nspace(:, 1))
 
 % calculation of the c scalar
 cScalar = 0; 
