@@ -36,7 +36,8 @@ end
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     part_sum = (R{j}/l)*calcMatrixSum(zM, Fj(:, :, j));
-    for i = 1:m/3
+    for i = 1:length(Fj(:,:,j))
+        k=Fj(:,i,j);
         Gij{i,j} = R{j}*zM{i} - part_sum;
     end
 end
@@ -44,32 +45,35 @@ end
 % pos vectors with respect to the center of the panel
 dij = zeros(3*mm,1,lenJ);
 for j = 1:lenJ
-[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j), x);
+[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j), y);
 end
 
 %calculation of m vector
 mvector = zeros(m,1);
 for len = 1:lenJ
     for i = length(Fj(:,:,j))
-        p = Fj(:,:,j);
-        q = p(i);
-        mvector = mvector + Gij{q,j}'*dij(3*i-2:3*i, 1, j);
+       mvector = mvector + Gij{i,j}'*dij(3*i-2:3*i, 1, j);
     end
 end
+size(mvector)
 
 %calculation of gmatrix (3m by 3m)
 gmatrix = zeros(m,m);
 for j = 1:lenJ
     for i=length(Fj(:,:,j))
-        p = Fj(:,:,j);
-        q = p(i);
-        gmatrix = gmatrix + 2*Gij{q,j}'*Gij{q,j};
+        %Gij{i,j}'*Gij{i,j}
+        gmatrix = gmatrix + 2*Gij{i,j}'*Gij{i,j};
     end
 end
+
+nspace1 = null(gmatrix);
+size(nspace1);
 
 % M is a 1 by 3*m vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
 M = -2*mvector; 
+
+dot(mvector,nspace1(:, 1))
 
 %calculating d scalar 
 dscalar = 0;
