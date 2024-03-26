@@ -7,7 +7,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Date: 02/24/24
+% Date: 03/27/24
 %
 % Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
@@ -115,6 +115,10 @@ err = abs(E{num}-E{num-1});
 
 % while loop that converges on a minimized energy value
 figure
+xlabel("Iteration Number [#]")
+ylabel("Energy [m^2]");
+title("Minimization Algorithm");
+
 while err > tol 
 
 Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);

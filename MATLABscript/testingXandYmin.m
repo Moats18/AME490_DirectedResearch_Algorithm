@@ -9,7 +9,7 @@
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Date: 02/24/24
+% Date: 03/27/24
 %
 % the initial configuration consists of two panels that share a common edge
 % all of the six vertices of the panel can be determined based on two randomly 
