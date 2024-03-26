@@ -112,4 +112,3 @@ sol = pinv(bigMatrix)*[B;e];
 yMin = sol(1:n, 1);
 
 end
-
