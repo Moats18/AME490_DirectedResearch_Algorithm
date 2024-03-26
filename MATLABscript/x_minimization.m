@@ -38,7 +38,7 @@ for j = 1:lenJ
     part_sum = (R{j}/l)*calcMatrixSum(zM, Fj(:, :, j));
     for i = 1:length(Fj(:,:,j))
         k=Fj(:,i,j);
-        Gij{i,j} = R{j}*zM{i} - part_sum;
+        Gij{i,j} = R{j}*zM{k} - part_sum; % rechec
     end
 end
 
@@ -51,17 +51,16 @@ end
 %calculation of m vector
 mvector = zeros(m,1);
 for len = 1:lenJ
-    for i = length(Fj(:,:,j))
+    for i = 1: length(Fj(:,:,j))
        mvector = mvector + Gij{i,j}'*dij(3*i-2:3*i, 1, j);
     end
 end
-size(mvector)
 
 %calculation of gmatrix (3m by 3m)
 gmatrix = zeros(m,m);
 for j = 1:lenJ
-    for i=length(Fj(:,:,j))
-        %Gij{i,j}'*Gij{i,j}
+    for i= 1:length(Fj(:,:,j))
+
         gmatrix = gmatrix + 2*Gij{i,j}'*Gij{i,j};
     end
 end
@@ -73,15 +72,13 @@ size(nspace1);
 % eliminates the need to utilize the tranpose
 M = -2*mvector; 
 
-dot(mvector,nspace1(:, 1))
+dot(mvector,nspace1(:, 1));
 
 %calculating d scalar 
 dscalar = 0;
 for j = 1:lenJ
-    for i=length(Fj(:,:,j))
-        p = Fj(:,:,j);
-        q = p(i);
-        dscalar = dscalar + norm(dij(q,1,j))^2;
+    for i=1:length(Fj(:,:,j))
+         dscalar = dscalar + norm(dij(i,1,j))^2;
     end
 end
 % Utilize the rigidity constraint matrix
@@ -96,8 +93,9 @@ big_matrix = zeros(m+row,m+row);
 big_matrix(1:m,1:m) = gmatrix;
 big_matrix(m+1:m+row,1:m) = U;
 big_matrix(1:m,m+1:m+row) = U';
-sol = big_matrix\[M;h];
+sol = pinv(big_matrix)*[M;h];
 
 % taking the first 3*m by 1 element that corresponds to the final minimized
 % X value
 Xmin = sol(1:m,1);
+

@@ -36,7 +36,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U
 % Ropt: array of rotation matrices for minimizes the elastic energy  
 
 % initial values
-loop = 0; % loop number
+loop = 1; % loop number
 E{1} = 0;
 rij = zeros(3*length(Tj), 1, length(J));
 
@@ -85,8 +85,9 @@ xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, U, h);
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
-    for i = 1:n/3
-        Aij{i, j} = xM{i} - sum;
+    for i = 1:length(Fj(:, :, j))
+        k = Fj(:, i, j);
+        Aij{i, j} = xM{k} - sum;
     end
 end
 
@@ -95,16 +96,14 @@ end
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
-    for i = 1:n/3
+    for i = 1:length(Fj(:, :, j))
         Qij{i, j} = xM{i} - sum;
     end
 end
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    f = Fj(:, :, j);
-    k = f(i);
-    E{num} = E{num} + norm(Aij{k, j}*yNew - RiOpt{j}*(Qij{k, j}*xNew))^2;
+    E{num} = E{num} + norm(Aij{i, j}*yNew - RiOpt{j}*(Qij{i, j}*xNew))^2;
     end
 end 
 
@@ -115,21 +114,22 @@ x = xNew;
 err = abs(E{num}-E{num-1});
 
 % while loop that converges on a minimized energy value
+figure
 while err > tol 
 
 Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 yNew = minY(x, y, Fj, Tj, J, Ropt, A, e); 
 xNew = x_minimization(x, yNew, Fj, Tj, J, Ropt, U, h);
 
+count = num +loop;
+E{count} = 0;
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    f = Fj(:, :, j);
-    k = f(i);
-    E{num} = E{num} + norm(Aij{k, j}*yNew - ROpt*(Qij{k, j}*xNew))^2;
+    E{count} = E{count} + norm(Aij{i, j}*yNew - Ropt{j}*(Qij{i, j}*xNew))^2;
     end
 end 
 
-err = abs(E{num}-E{num-1});
+err = abs(E{count}-E{count-1});
 
 % Updating the values to be used at the beginning of the next loop
 R = Ropt; 
@@ -138,16 +138,17 @@ x = xNew;
 
 % showing the results of the algorithm in real time
 disp("-------------------------------------")
-disp("Iteration number ", num2str(loop));
-disp("Current Energy Value: ", num2str(E{n}));
-disp("Current Error Value: ", num2str(err));
+disp("Iteration number " + num2str(loop));
+disp("Current Energy Value: " + num2str(E{count}));
+disp("Current Error Value: " + num2str(err));
 
 % plotting the results of the algorithm in real time
-%hold on
-%scatter(loop, E{loop+1}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
-%drawnow; % ensures that the updated point is plotted
-%pause(0.1); %pausing for 1/10 of a second
-%loop = loop + 1;
+hold on
+scatter(loop, E{loop}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+drawnow; % ensures that the updated point is plotted
+pause(0.5); %pausing for 1/10 of a second
+loop = loop + 1;
+hold off
 end
 
 Ropt = R;

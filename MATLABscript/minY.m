@@ -1,3 +1,4 @@
+
 function yMin = minY(x, y, Fj, Tj, J, R, A, e)
 % 
 % uses the method of lagrange multipliers to convert the quadratic 
@@ -53,7 +54,6 @@ kMatrix = zeros(n, n);
 
 for j = 1:lenJ
     for i = 1:length(Fj(:, :, j))
-        Aij{i, j}'*Aij{i, j}
     kMatrix = kMatrix + 2*Aij{i, j}'*Aij{i, j};
     end
 end
@@ -76,18 +76,17 @@ for j = 1:lenJ
     end
 end
 
-size(bVector)
 
 % B is a 1 by 3*n vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
 B = -2*bVector; 
 
-dot(bVector,nspace(:, 1))
+dot(bVector,nspace(:, 1));
 
 % calculation of the c scalar
 cScalar = 0; 
 for j = 1:lenJ
-    for i = length(Fj(:, :, j))
+    for i = 1:length(Fj(:, :, j))
         f = Fj(:, :, j);
         k = f(i);
         cScalar = cScalar + norm(rij(k, 1, j))^2; 
@@ -106,7 +105,7 @@ bigMatrix = zeros(n+rows, n+rows);
 bigMatrix(1:n, 1:n) = kMatrix;
 bigMatrix(n+1:n+rows, 1:n) = A;
 bigMatrix(1:n,n+1:n+rows) = A';
-sol = bigMatrix\[B; e];
+sol = pinv(bigMatrix)*[B;e];
 
 % take the first 3*n by 1 elements which coorespond to the minimized y
 % values
