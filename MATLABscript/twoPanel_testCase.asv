@@ -20,8 +20,8 @@
 %x1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 %x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
-x1 = [0;0;0];
-x2 = [0;1;0];
+x1 = [1;2;3];
+x2 = [3;2;1];
 
 % x rigidity constraints- define as 
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
@@ -35,9 +35,9 @@ U = A;
 
 % x - rigidity constraints
 %e1 = randi(5, 3, 1);
-%e2 = randi(5, 3, 1);
+%2 = randi(5, 3, 1);
 e1 = [1;0;0];
-e2 = [0;2;0];
+e2 = [1;0;0];
 h = [e1; e2; e1; e2; e1];
 
 % populate the x vector
@@ -52,15 +52,15 @@ x(7:18, 1) = xU;
 %l1 = randi(5, 3, 1);
 %l2 = randi(5, 3, 1);
 l1 = [1;0;0];
-l2 = [0;2;0];
+l2 = [1;0];
 e = [l1; l2; l1; l2; l1];
 
 % Initial y-valudes
 %y1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 %y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
-y1 = [0;0;0];
-y2 = [0;1;0];
+y1 = [1;2;3];
+y2 = [3;2;1];
 
 % populate the y vector
 yU = A(1:15, 7:18)\(e-(A(1:15, 1:6)*[y1; y2]));

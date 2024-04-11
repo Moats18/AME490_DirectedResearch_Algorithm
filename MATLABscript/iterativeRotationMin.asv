@@ -48,11 +48,11 @@ for i = 1:(length(y)/3)
      j = Ti{i};
         for k = 1:length(Ti{i})
         l = j(k);
-        [~, index] = find(Tj(:, :, l) == i);
-        sum = sum + cj{l} + R{l}*rij(3*index-2:3*index, 1, l);% need to figure out R{j} vector
+        index = find(i, Tj(:, :, l));
+        sum = sum + cj{l} + R{l}*rij(3*count-2:3*count, 1, l);% need to figure out R{j} vector
         count = count+1;
         end
-    yNew(3*i-2:3*i, 1) = sum/length(Ti{i});
+    yNew(3*i-2:3*i, 1) = sum/length(Ti);
 end
 
 % updating the value of the center of the panel
@@ -75,9 +75,9 @@ end
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    Bj{j} = Bj{j} + Bij{j}'*Bij{j};
+    Bj{j} = Bj{j} + Bij{i, j};
     end 
-    [Vec ,~] = eig(Bj{j});
+    [Vec ,~] = eig(Bj{j}'*Bj{j});
     pj{j} = Vec(:, 1)';
     Rnew{j} = quat2rotm(pj{j});
 end

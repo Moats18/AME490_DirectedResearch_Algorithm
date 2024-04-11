@@ -100,3 +100,4 @@ sol= pinv(big_matrix)*[M;h];
 % X value
 Xmin = sol(1:m,1);
 
+end
