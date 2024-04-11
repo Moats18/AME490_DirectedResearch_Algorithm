@@ -15,10 +15,13 @@
 % all of the six vertices of the panel can be determined based on two randomly 
 % generated points. Using the symmetry constraints imposed on these two points 
 % results in six fully defined points
-
+rng(1);
 % Initial x-values
 x1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
+
+%x1 = [9;10;2];
+%x2 = [3;6;10];
 
 % x rigidity constraints- define as 
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
@@ -33,6 +36,8 @@ U = A;
 % x - rigidity constraints
 e1 = randi(5, 3, 1);
 e2 = randi(5, 3, 1);
+%e1 = [5;1;5];
+%e2 = [5;3;5];
 h = [e1; e2; e1; e2; e1];
 
 % populate the x vector
@@ -46,11 +51,16 @@ x(7:18, 1) = xU;
 % y - rigidity constraints
 l1 = randi(5, 3, 1);
 l2 = randi(5, 3, 1);
+%l1 = [3;3;2];
+%l2 = [2;3;2];
 e = [l1; l2; l1; l2; l1];
 
 % Initial y-valudes
 y1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
+
+%y1 = [9;3;1];
+%y2 = [8;3;4];
 
 % populate the y vector
 yU = A(1:15, 7:18)\(e-(A(1:15, 1:6)*[y1; y2]));

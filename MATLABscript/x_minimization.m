@@ -93,7 +93,8 @@ big_matrix = zeros(m+row,m+row);
 big_matrix(1:m,1:m) = gmatrix;
 big_matrix(m+1:m+row,1:m) = U;
 big_matrix(1:m,m+1:m+row) = U';
-sol = pinv(big_matrix)*[M;h];
+sol= pinv(big_matrix)*[M;h];
+%sol4 = lsqminnorm(big_matrix, [M;h]); 
 
 % taking the first 3*m by 1 element that corresponds to the final minimized
 % X value
