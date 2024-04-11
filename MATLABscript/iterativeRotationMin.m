@@ -96,6 +96,7 @@ R = Rnew;
 y = yNew;
 cj = cjNew;
 
+% need to update the new chnages
 while (abs(E{n} - E{n-1}) > tol)
 
 % setting the new values of the y position vector
