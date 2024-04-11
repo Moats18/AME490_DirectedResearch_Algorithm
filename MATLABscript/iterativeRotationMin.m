@@ -42,15 +42,17 @@ for j = 1:length(J)
 end 
 
 % setting the new values of the y position vector
-for i = 1:(length(y)/3)  
-    for k = 1:length(Ti{i})
-        j = Ti{i};
+for i = 1:(length(y)/3) 
+    sum = zeros(3, 1);
+    count = 1;
+     j = Ti{i};
+        for k = 1:length(Ti{i})
         l = j(k);
-        for m = 1:length(Fj(:, :, l))
-        sum = cj{l} + R{l}*rij(3*m-2:3*m, 1, l);% need to figure out R{j} vector
-        end 
-    end 
-    yNew(3*i-2:3*i, 1) = sum/length(Ti);
+        [~, index] = find(Tj(:, :, l) == i);
+        sum = sum + cj{l} + R{l}*rij(3*index-2:3*index, 1, l);% need to figure out R{j} vector
+        count = count+1;
+        end
+    yNew(3*i-2:3*i, 1) = sum/length(Ti{i});
 end
 
 % updating the value of the center of the panel
@@ -61,8 +63,9 @@ end
 % creation of the rotation matrix Bij
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-       V = rij(3*i-2:3*i, 1, j) + cj{j} - y(3*i-2:3*i, 1);
-       T = cj{j} - rij(3*i-2:3*i, 1, j) - y(3*i-2:3*i, 1);
+       k = Fj(1, i, j); 
+       V = rij(3*i-2:3*i, 1, j) + cj{j} - y(3*k-2:3*k, 1);
+       T = cj{j} - rij(3*i-2:3*i, 1, j) - y(3*k-2:3*k, 1);
        Bij{i, j} = [0 V(1) V(2) V(3); T(1) 0 -V(3) V(2); T(2) V(3) 0 -V(1); T(3) -V(2) V(1) 0];
     end
 end
@@ -73,11 +76,17 @@ end
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    Bj{j} = Bj{j} + Bij{i, j};
-    end 
-    [Vec ,~] = eig(Bj{j}'*Bj{j});
-    pj{j} = Vec(:, 1)';
-    Rnew{j} = quat2rotm(pj{j});
+    Bj{j} = Bj{j} + Bij{i, j}'*Bij{i, j};
+    end
+    % rounding the small numeric values to zero
+    roundedBj = Bj{j};
+    roundedBj(abs(roundedBj)<1e-3)=0;
+
+    [V ,D] = eig(roundedBj);
+    minEig = min(D(D~=0));
+    [~, col] = find(D == minEig);
+    pj{j} = V(:, col);
+    Rnew{j} = quat2rotm(pj{j}');
 end
 
 n = 2;
@@ -86,7 +95,7 @@ E{n} = 0;
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
-    E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j}- Rnew{j} - rij(3*i-2:3*i, 1, j))^2;
+    E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j} - Rnew{j}*rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 
@@ -94,18 +103,21 @@ R = Rnew;
 y = yNew;
 cj = cjNew;
 
+% need to update the new chnages
 while (abs(E{n} - E{n-1}) > tol)
 
 % setting the new values of the y position vector
-for i = 1:(length(y)/3)  
-    for k = 1:length(Ti{i})
-        j = Ti{i};
+for i = 1:(length(y)/3) 
+    sum = 0;
+    count = 1;
+     j = Ti{i};
+        for k = 1:length(Ti{i})
         l = j(k);
-        for m = 1:length(Fj(:, :, l))
-        sum = cj{l} + R{l}*rij(3*m-2:3*m, 1, l);% need to figure out R{j} vector
-        end 
-    end 
-    yNew(3*i-2:3*i, 1) = sum/length(Ti);
+        [~, index] = find(Tj(:, :, l) == i);
+        sum = sum + cj{l} + R{l}*rij(3*index-2:3*index, 1, l);% need to figure out R{j} vector
+        count = count+1;
+        end
+    yNew(3*i-2:3*i, 1) = sum/length(Ti{i});
 end
 
 % updating the value of the center of the panel
@@ -116,8 +128,9 @@ end
 % creation of the rotation matrix Bij
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-       V = rij(3*i-2:3*i, 1, j) + cj{j} - y(3*i-2:3*i, 1);
-       T = cj{j} - rij(3*i-2:3*i, 1, j) - y(3*i-2:3*i, 1);
+       k = Fj(1, i, j); 
+       V = rij(3*i-2:3*i, 1, j) + cj{j} - y(3*k-2:3*k, 1);
+       T = cj{j} - rij(3*i-2:3*i, 1, j) - y(3*k-2:3*k, 1);
        Bij{i, j} = [0 V(1) V(2) V(3); T(1) 0 -V(3) V(2); T(2) V(3) 0 -V(1); T(3) -V(2) V(1) 0];
     end
 end
@@ -128,11 +141,17 @@ end
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    Bj{j} = Bj{j} + Bij{i, j};
-    end 
-    [Vec ,~] = eig(Bj{j}'*Bj{j});
-    pj{j} = Vec(:, 1)';
-    Rnew{j} = quat2rotm(pj{j});
+    Bj{j} = Bj{j} + Bij{i, j}'*Bij{i, j};
+    end
+    % rounding the small numeric values to zero
+    roundedBj = Bj{j};
+    roundedBj(abs(roundedBj)<1e-3)=0;
+
+    [V ,D] = eig(roundedBj);
+    minEig = min(D(D~=0));
+    [~, col] = find(D == minEig);
+    pj{j} = V(:, col);
+    Rnew{j} = quat2rotm(pj{j}');
 end
 
 n = n+1;

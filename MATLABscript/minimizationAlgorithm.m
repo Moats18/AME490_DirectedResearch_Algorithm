@@ -77,8 +77,19 @@ RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 % the first minimized y 
 yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
 
+plot3dvec(y, 'y');
+hold on
+plot3dvec(yNew, 'yNew');
+hold off
+
 % the first minimized x 
 xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, U, h);
+
+figure
+plot3dvec(x, 'x');
+hold on
+plot3dvec(xNew, 'xNew');
+hold off
 
 % Defining the matrix that allows the vector y to be factored out
 % Aij{1, 1} is a 3 by 3*n matrix
