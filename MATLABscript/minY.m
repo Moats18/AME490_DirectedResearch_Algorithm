@@ -106,6 +106,8 @@ bigMatrix(1:n, 1:n) = kMatrix;
 bigMatrix(n+1:n+rows, 1:n) = A;
 bigMatrix(1:n,n+1:n+rows) = A';
 sol = pinv(bigMatrix)*[B;e];
+%sol2 = lsqminnorm(bigMatrix, [B;e]);
+
 
 % take the first 3*n by 1 elements which coorespond to the minimized y
 % values
