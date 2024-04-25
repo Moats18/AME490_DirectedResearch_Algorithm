@@ -37,8 +37,7 @@ end
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
-    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2;
-    
+    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2;   
     end
 end 
 

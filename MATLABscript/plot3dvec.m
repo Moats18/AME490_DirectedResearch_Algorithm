@@ -15,7 +15,6 @@ labels{i} = [name, num2str(i)];
 end
 
 plot(x, y);
-
 for i = 1:length(labels)
     text(x(i), y(i), labels{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
 end
