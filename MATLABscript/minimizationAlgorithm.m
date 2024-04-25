@@ -77,6 +77,7 @@ RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 % the first minimized y 
 yNew = minY(x, y, Fj, Tj, J, RiOpt, A, e);
 
+figure
 plot3dvec(y, 'y');
 hold on
 plot3dvec(yNew, 'yNew');
@@ -130,13 +131,20 @@ xlabel("Iteration Number [#]")
 ylabel("Energy [m^2]");
 title("Minimization Algorithm");
 
+hold on
+for i=1:length(E)
+scatter(i, E{i}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+drawnow; % ensures that the updated point is plotted
+pause(0.5); %pausing for 1/10 of a second
+end
+
 while err > tol 
 
 Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 yNew = minY(x, y, Fj, Tj, J, Ropt, A, e); 
 xNew = x_minimization(x, yNew, Fj, Tj, J, Ropt, U, h);
 
-count = num +loop;
+count = num +  loop;
 E{count} = 0;
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
@@ -153,13 +161,16 @@ x = xNew;
 
 % showing the results of the algorithm in real time
 disp("-------------------------------------")
-disp("Iteration number " + num2str(loop));
+disp("Iteration number: " + num2str(loop));
+disp("Total Energy Calculations: " + num2str(count));
+disp("-------------------------------------")
+disp("Previous Energy Value: " + num2str(E{count-1}));
 disp("Current Energy Value: " + num2str(E{count}));
 disp("Current Error Value: " + num2str(err));
 
 % plotting the results of the algorithm in real time
 hold on
-scatter(loop, E{loop}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+scatter(count, E{count}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
 drawnow; % ensures that the updated point is plotted
 pause(0.5); %pausing for 1/10 of a second
 loop = loop + 1;

@@ -38,6 +38,7 @@ for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
     E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2;
+    
     end
 end 
 
@@ -85,9 +86,13 @@ for j = 1:length(J)
     [V ,D] = eig(roundedBj);
     minEig = min(D(D~=0));
     [~, col] = find(D == minEig);
-    pj{j} = V(:, col);
+    if length(col) > 1
+        eigenVal = col(2);
+    else
+        eigenVal = col;
+    end
+    pj{j} = V(:, eigenVal);
     Rnew{j} = quat2rotm(pj{j}');
-    Bj{j} = Bj{j} + Bij{j}'*Bij{j};
 end
 
 n = 2;
@@ -97,6 +102,7 @@ for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
     E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j} - Rnew{j}*rij(3*i-2:3*i, 1, j))^2;
+
     end
 end 
 
@@ -151,7 +157,12 @@ for j = 1:length(J)
     [V ,D] = eig(roundedBj);
     minEig = min(D(D~=0));
     [~, col] = find(D == minEig);
-    pj{j} = V(:, col);
+    if length(col) > 1
+        eigenVal = col(2);
+    else
+        eigenVal = col;
+    end
+    pj{j} = V(:, eigenVal);
     Rnew{j} = quat2rotm(pj{j}');
 end
 
@@ -161,7 +172,7 @@ E{n} = 0;
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
-    E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j}- Rnew{j} - rij(3*i-2:3*i, 1, j))^2;
+    E{n} = E{n} + norm(yNew(3*k-2:3*k, 1)- cjNew{j}- Rnew{j}*rij(3*i-2:3*i, 1, j))^2;
     end
 end 
 

@@ -71,7 +71,8 @@ end
 % calculation of the b vector
 bVector = zeros(n, 1);
 for j = 1:lenJ
-    for i = length(Fj(:, :, j))
+    for i = 1:length(Fj(:, :, j))
+        %(rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'
         bVector = bVector + (rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'; 
     end
 end
@@ -87,9 +88,9 @@ dot(bVector,nspace(:, 1));
 cScalar = 0; 
 for j = 1:lenJ
     for i = 1:length(Fj(:, :, j))
-        f = Fj(:, :, j);
-        k = f(i);
-        cScalar = cScalar + norm(rij(k, 1, j))^2; 
+        %f = Fj(:, :, j);
+        %k = f(i)
+        cScalar = cScalar + norm(rij(i, 1, j))^2; 
     end
 end
 
@@ -106,7 +107,7 @@ bigMatrix(1:n, 1:n) = kMatrix;
 bigMatrix(n+1:n+rows, 1:n) = A;
 bigMatrix(1:n,n+1:n+rows) = A';
 sol = pinv(bigMatrix)*[B;e];
-%sol2 = lsqminnorm(bigMatrix, [B;e]);
+%sol = lsqminnorm(bigMatrix, [B;e]);
 
 
 % take the first 3*n by 1 elements which coorespond to the minimized y

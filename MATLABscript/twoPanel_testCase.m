@@ -28,9 +28,10 @@ A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
     -eye(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3);
     zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3);
     zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3), -eye(3, 3);
-    zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3)];
-
+    zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3)
+    eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)]; % new addition
 %
+
 U = A;
 
 % x - rigidity constraints
@@ -39,22 +40,16 @@ U = A;
 %e2 = randi(5, 3, 1);
 e1 = [1;0;0];
 e2 = [0;2;0];
-h = [e1; e2; e1; e2; e1];
+e3 = [0;0;0]; % new addition
+h = [e1; e2; e1; e2; e1; e3];
 
 % populate the x vector
-xU = A(1:15, 7:18)\(h-(A(1:15, 1:6)*[x1; x2]));
+xU = A(1:18, 7:18)\(h-(A(1:18, 1:6)*[x1; x2])); % chnaged size from 1:15 to 1:18
 
 % final x vector
-x = zeros(15, 1);
+x = zeros(18, 1); % chnaged size from 15 to 18
 x(1:6, 1) = [x1; x2];
-x(7:18, 1) = xU;
-
-% y - rigidity constraints
-%l1 = randi(5, 3, 1);
-%l2 = randi(5, 3, 1);
-l1 = [1;0;0];
-l2 = [0;2;0;];
-e = [l1; l2; l1; l2; l1];
+x(7:18, 1) = xU; % changed size from 1:15 to 1:18
 
 % Initial y-valudes
 %y1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
@@ -63,13 +58,21 @@ e = [l1; l2; l1; l2; l1];
 y1 = [0;0;0];
 y2 = [0;1;0];
 
+% y - rigidity constraints
+%l1 = randi(5, 3, 1);
+%l2 = randi(5, 3, 1);
+l1 = [1;0;0];
+l2 = [0;2;0];
+l3 = [0;0;0];% new addition
+e = [l1; l2; l1; l2; l1; l3];
+
 % populate the y vector
-yU = A(1:15, 7:18)\(e-(A(1:15, 1:6)*[y1; y2]));
+yU = A(1:18, 7:18)\(e-(A(1:18, 1:6)*[y1; y2]));% chnaged size from 1:15 to 1:18
 
 % final y vector
-y = zeros(15, 1);
+y = zeros(18, 1);% chnaged size from 15 to 18
 y(1:6, 1) = [y1; y2];
-y(7:18, 1) = yU;
+y(7:18, 1) = yU;% chnaged size from 1:15 to 1:18
 
 % populate the vector numbering all of the panels
 J = [1, 2];
@@ -111,5 +114,3 @@ tolR = 0.1;
 tol = 0.1;
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR);
-
-

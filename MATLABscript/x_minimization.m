@@ -35,32 +35,18 @@ end
 % Gij{1, 1} is a 3 by n matrix
 for j = 1:lenJ
     l = length(Fj(:, :, j));
-    part_sum = (R{j}/l)*calcMatrixSum(zM, Fj(:, :, j));
+    part_sum = R{j}*(1/l)*calcMatrixSum(zM, Fj(:, :, j)); 
     for i = 1:length(Fj(:,:,j))
         k=Fj(:,i,j);
-        Gij{i,j} = R{j}*zM{k} - part_sum; % rechec
-    end
-end
-
-% pos vectors with respect to the center of the panel
-dij = zeros(3*mm,1,lenJ);
-for j = 1:lenJ
-[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j), y);
-end
-
-%calculation of m vector
-mvector = zeros(m,1);
-for len = 1:lenJ
-    for i = 1: length(Fj(:,:,j))
-       mvector = mvector + Gij{i,j}'*dij(3*i-2:3*i, 1, j);
+        Gij{i,j} = (R{j}*zM{k}) - part_sum; 
     end
 end
 
 %calculation of gmatrix (3m by 3m)
 gmatrix = zeros(m,m);
+
 for j = 1:lenJ
     for i= 1:length(Fj(:,:,j))
-
         gmatrix = gmatrix + 2*Gij{i,j}'*Gij{i,j};
     end
 end
@@ -68,6 +54,20 @@ end
 nspace1 = null(gmatrix);
 size(nspace1);
 
+% pos vectors with respect to the center of the panel
+dij = zeros(3*mm,1,lenJ);
+
+for j = 1:lenJ
+[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j),y);%error??
+end
+
+%calculation of m vector
+mvector = zeros(m,1);
+for j = 1:lenJ
+    for i = 1:length(Fj(:,:,j))
+       mvector = mvector +  (Gij{i,j}'*dij(3*i-2:3*i, 1, j)); %error?
+    end
+end
 % M is a 1 by 3*m vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
 M = -2*mvector; 
@@ -78,6 +78,8 @@ dot(mvector,nspace1(:, 1));
 dscalar = 0;
 for j = 1:lenJ
     for i=1:length(Fj(:,:,j))
+           %f = Fj(:, :, j);
+           %k = f(i)
          dscalar = dscalar + norm(dij(i,1,j))^2;
     end
 end
@@ -94,7 +96,7 @@ big_matrix(1:m,1:m) = gmatrix;
 big_matrix(m+1:m+row,1:m) = U;
 big_matrix(1:m,m+1:m+row) = U';
 sol= pinv(big_matrix)*[M;h];
-%sol4 = lsqminnorm(big_matrix, [M;h]); 
+%sol = lsqminnorm(big_matrix, [M;h]); 
 
 % taking the first 3*m by 1 element that corresponds to the final minimized
 % X value
