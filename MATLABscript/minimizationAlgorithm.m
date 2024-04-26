@@ -103,7 +103,8 @@ for j = 1:lenJ
     l = length(Fj(:, :, j));
     sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
     for i = 1:length(Fj(:, :, j))
-        Qij{i, j} = xM{i} - sum;
+        k = Fj(:, i, j);
+        Qij{i, j} = xM{k} - sum;
     end
 end
 

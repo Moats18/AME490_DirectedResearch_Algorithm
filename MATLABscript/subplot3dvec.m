@@ -1,5 +1,8 @@
 function subplot3dvec(vec1, name1, vec2, name2)
 
+% plots two column vectors of 3-dimensional points (x1, y1, z1, x2, y2,
+% z2....) separely in a horizontal subplot
+
 x1 = zeros(length(vec1)/3);
 y1 = x1;
 z1 = x1;

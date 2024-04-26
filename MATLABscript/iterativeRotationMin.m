@@ -55,6 +55,7 @@ for i = 1:(length(y)/3)
     yNew(3*i-2:3*i, 1) = sum/length(Ti{i});
 end
 
+
 % updating the value of the center of the panel
 for j = 1:length(J)
 [cjNew{j}, ~] = centerOfPanel(Fj(:, :, j), yNew);
