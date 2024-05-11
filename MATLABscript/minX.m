@@ -1,4 +1,4 @@
-function Xmin = x_minimization(x, y, Fj, Sj, J, R, U,h)
+function Xmin = minX(x, y, Fj, Sj, J, R, U,h)
 %
 %Inputs:
 %
@@ -70,7 +70,7 @@ for j = 1:lenJ
 end
 % M is a 1 by 3*m vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
-M = -2*mvector; 
+M = 2*mvector; 
 
 dot(mvector,nspace1(:, 1));
 

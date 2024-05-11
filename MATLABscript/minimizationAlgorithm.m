@@ -81,10 +81,11 @@ figure
 subplot3dvec(y, 'y', yNew, 'yNew');
 
 % the first minimized x 
-xNew = x_minimization(x, yNew, Fj, Tj, J, RiOpt, U, h);
+xNew = minX(x, yNew, Fj, Tj, J, RiOpt, U, h);
 
 figure
 subplot3dvec(x, 'x', xNew, 'xNew')
+hold off 
 
 % Defining the matrix that allows the vector y to be factored out
 % Aij{1, 1} is a 3 by 3*n matrix
@@ -137,7 +138,7 @@ while err > tol
 
 Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 yNew = minY(x, y, Fj, Tj, J, Ropt, A, e); 
-xNew = x_minimization(x, yNew, Fj, Tj, J, Ropt, U, h);
+xNew = minX(x, yNew, Fj, Tj, J, Ropt, U, h);
 
 count = num +  loop;
 E{count} = 0;

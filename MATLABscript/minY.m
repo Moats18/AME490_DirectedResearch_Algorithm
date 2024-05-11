@@ -59,6 +59,7 @@ for j = 1:lenJ
 end
 
 nspace = null(kMatrix);
+r = rank(kMatrix);
 size(nspace);
 
 % pos vectors with respect to the center of the panel for all panels
@@ -77,11 +78,10 @@ for j = 1:lenJ
     end
 end
 
+% B is a 1 by 3*n vector 
+B = 2*bVector; 
 
-% B is a 1 by 3*n vector (using the dot product function in MATLAB
-% eliminates the need to utilize the tranpose
-B = -2*bVector; 
-
+% used to check if the bVector is in the nullspace of the k matrix
 dot(bVector,nspace(:, 1));
 
 % calculation of the c scalar
@@ -106,12 +106,18 @@ bigMatrix = zeros(n+rows, n+rows);
 bigMatrix(1:n, 1:n) = kMatrix;
 bigMatrix(n+1:n+rows, 1:n) = A;
 bigMatrix(1:n,n+1:n+rows) = A';
-sol = pinv(bigMatrix)*[B;e];
-%sol = lsqminnorm(bigMatrix, [B;e]);
 
+% used to check the size of the nullspace 
+nspace2 = null(bigMatrix);
+r2 = rank(bigMatrix);
+size(nspace2);
+
+sol = pinv(bigMatrix)*[B;e];
+sol1 = inv(bigMatrix)*[B;e];
 
 % take the first 3*n by 1 elements which coorespond to the minimized y
 % values
 yMin = sol(1:n, 1);
+yMin1 = sol1(1:n, 1);
 
 end

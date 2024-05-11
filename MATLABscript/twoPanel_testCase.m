@@ -21,13 +21,13 @@
 %x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 x1 = [0;0;0];
-x2 = [1;1;0];
+x2 = [1;0.5;0];
 
 % x rigidity constraints- define as 
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
     -eye(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3);
     zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3);
-    zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3), -eye(3, 3);
+    %zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3), -eye(3, 3); 
     zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3)
     eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)]; % new addition
 %
@@ -40,10 +40,10 @@ U = A;
 e1 = [1;0;0];
 e2 = [0;2;0];
 e3 = [0;0;0]; % new addition
-h = [e1; e2; e1; e2; e1; e3];
+h = [e1; e2; e1; e1; e3]; % removed e2 from the fourth entry (redundant constraint)
 
 % populate the x vector
-xU = A(1:18, 7:18)\(h-(A(1:18, 1:6)*[x1; x2])); % chnaged size from 1:15 to 1:18
+xU = A(1:15, 7:18)\(h-(A(1:15, 1:6)*[x1; x2])); % 
 
 % final x vector
 x = zeros(18, 1); % chnaged size from 15 to 18
@@ -55,7 +55,7 @@ x(7:18, 1) = xU; % changed size from 1:15 to 1:18
 %y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 y1 = [0;0;0];
-y2 = [1;1;0];
+y2 = [1;0.5;0];
 
 % y - rigidity constraints
 %l1 = randi(5, 3, 1);
@@ -63,10 +63,10 @@ y2 = [1;1;0];
 l1 = [1;0;0];
 l2 = [0;2;0];
 l3 = [0;0;0];% new addition
-e = [l1; l2; l1; l2; l1; l3];
+e = [l1; l2; l1; l1; l3]; %removed l2
 
 % populate the y vector
-yU = A(1:18, 7:18)\(e-(A(1:18, 1:6)*[y1; y2]));% chnaged size from 1:15 to 1:18
+yU = A(1:15, 7:18)\(e-(A(1:15, 1:6)*[y1; y2]));% chnaged size from 1:15 to 1:18
 
 % final y vector
 y = zeros(18, 1);% chnaged size from 15 to 18
