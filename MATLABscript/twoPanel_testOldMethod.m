@@ -21,7 +21,7 @@
 %x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 x1 = [0;0;0];
-x2 = [1;0.5;0];
+x2 = [1;1;0];
 
 % x rigidity constraints- define as 
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
@@ -55,7 +55,7 @@ x(7:18, 1) = xU; % changed size from 1:15 to 1:18
 %y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 y1 = [0;0;0];
-y2 = [1;0.5;0];
+y2 = [1; 2;0];
 
 % y - rigidity constraints
 %l1 = randi(5, 3, 1);

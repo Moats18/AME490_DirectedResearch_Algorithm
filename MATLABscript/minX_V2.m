@@ -25,6 +25,11 @@ function Xmin = minX_V2(x, y, Fj, Sj, J, R, U,h)
 % a list of vectors called x
 
 
+%creating the g matrix 
+
+
+%
+
 
 end
 

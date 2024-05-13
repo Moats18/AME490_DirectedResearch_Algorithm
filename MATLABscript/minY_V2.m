@@ -1,4 +1,4 @@
-function yMin = minY_V2(x, y, Fj, Tj, J, R, A, e)
+function yMin = minY_V2(x, y, Fj, Tj, J, R, A)
 % 
 % directly solves the linear equation to calculate the perturbation of the
 % initial y 
@@ -7,7 +7,6 @@ function yMin = minY_V2(x, y, Fj, Tj, J, R, A, e)
 %
 % Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
-% e: e is a vector of the rigid lengths between different y coordinates
 %
 % Indexing Inputs:
 % Tj: a cell array of the set of all x's within each panel(the jth panel
@@ -26,7 +25,67 @@ function yMin = minY_V2(x, y, Fj, Tj, J, R, A, e)
 % a list of coord vectors called y
 
 
+%% creating the k matrix
+n = length(y);
+lenJ = length(J);
+nn = length(Fj);
 
+for i = 1:(n/3)
+    x1 = zeros(3, n);
+    x1(1:3, 3*i-2:3*i) = eye(3);
+    xM{i} = x1;
+end 
+
+% Defining the matrix that allows the vector y to be factored out
+% Aij{1, 1} is a 3 by n matrix
+
+for j = 1:lenJ
+    l = length(Fj(:, :, j));
+    sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
+    for i = 1:length(Fj(:, :, j))
+        k = Fj(:, i, j);
+        Aij{i, j} = xM{k} - sum;
+    end
+end
+
+% pre-allocating the size of the kMatrix (3n by 3n)
+kMatrix = zeros(n, n);
+
+for j = 1:lenJ
+    for i = 1:length(Fj(:, :, j))
+    kMatrix = kMatrix + 2*Aij{i, j}'*Aij{i, j};
+    end
+end
+
+%determining the N matrix
+nMatrix = null(A);
+
+% pos vectors with respect to the center of the panel for all panels
+rij = zeros(3*nn, 1, lenJ);
+
+for j = 1:lenJ
+[~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), x);
+end 
+
+% calculation of the negative b vector
+bVector = zeros(n, 1);
+for j = 1:lenJ
+    for i = 1:length(Fj(:, :, j))
+        %(rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'
+        bVector = bVector + (rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'; 
+    end
+end
+
+% B is a 1 by 3*n vector 
+B = -2*bVector; 
+
+% calculation of bTilde
+bTilde = -2*(nMatrix'*k*y + nMatrix'*B); 
+
+% determining the perturbation method
+yTilde = (nMatrix'*k*nMatrix)\bTilde;
+
+yMin = y + yTilde;
 
 end
 
