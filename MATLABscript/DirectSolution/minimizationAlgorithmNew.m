@@ -75,13 +75,13 @@ end
 RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
 
 % the first minimized y (using the new function)
-yNew = minY_V2(x, y, Fj, Tj, J, RiOpt, A, e);
+yNew = minY_V2(x, y, Fj, Tj, J, RiOpt, A);
 
 figure
 subplot3dvec(y, 'y', yNew, 'yNew');
 
 % the first minimized x (using the new function)
-xNew = minX_V2(x, yNew, Fj, Tj, J, RiOpt, U, h);
+xNew = minX_V2(x, yNew, Fj, Tj, J, RiOpt, U);
 
 figure
 subplot3dvec(x, 'x', xNew, 'xNew')
@@ -137,8 +137,8 @@ end
 while err > tol 
 
 Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
-yNew = minY_V2(x, y, Fj, Tj, J, Ropt, A, e); 
-xNew = minX_V2(x, yNew, Fj, Tj, J, Ropt, U, h);
+yNew = minY_V2(x, y, Fj, Tj, J, Ropt, A); 
+xNew = minX_V2(x, yNew, Fj, Tj, J, Ropt, U);
 
 count = num +  loop;
 E{count} = 0;

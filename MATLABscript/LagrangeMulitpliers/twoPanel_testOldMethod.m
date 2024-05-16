@@ -55,7 +55,7 @@ x(7:18, 1) = xU; % changed size from 1:15 to 1:18
 %y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 y1 = [0;0;0];
-y2 = [1; 2;0];
+y2 = [1; 1;0];
 
 % y - rigidity constraints
 %l1 = randi(5, 3, 1);
@@ -112,4 +112,5 @@ tolR = 0.1;
 % determine the initial tolerance for the entire algorithm minimization
 tol = 0.1;
 
-[yOpt, xOpt, Ropt] = minimizationAlgorithmnNew(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR);
+[yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR);
+

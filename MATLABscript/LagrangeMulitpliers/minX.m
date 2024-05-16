@@ -58,7 +58,7 @@ size(nspace1);
 dij = zeros(3*mm,1,lenJ);
 
 for j = 1:lenJ
-[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j),y);%error??
+[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j),y);
 end
 
 %calculation of m vector
