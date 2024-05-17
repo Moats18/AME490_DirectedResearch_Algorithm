@@ -21,7 +21,7 @@
 %x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 x1 = [0;0;0];
-x2 = [1;1;0];
+x2 = [2;1;0];
 
 % x rigidity constraints- define as 
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
@@ -110,6 +110,6 @@ end
 tolR = 0.1;
 
 % determine the initial tolerance for the entire algorithm minimization
-tol = 0.1;
+tol = 0.00001;
 
-[yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR);
+[yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);

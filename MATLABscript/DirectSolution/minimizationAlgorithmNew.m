@@ -1,4 +1,4 @@
-function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, Ti, J, R, A, U, h, e, tol, tolR)
+function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol)
 % 
 % Based on the paper: "Elastic Energy Approximation and Minimization
 % Algorithm for Foldable Meshes" 
@@ -11,21 +11,17 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, Ti, J, R, A
 %
 % Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
-% e: e is a vector of the rigid lengths between different y coordinates
 % U: U is a matrix that contains the rigidity constraints such that Ux = h
-% h: h is a vector of the rigid lenghts between different x coordinates\
 %
 % Indexing Inputs:
 % Tj: a 3D array of the set of all x's within each panel 
 % Tj size is 1 by verticesPerPanel  by nuPanels;
-% Ti: the set of all panels associated with index i
 % x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
 % Fj: a 2D array of the set of all y's within each panel (the jth panel
 % corresponds to the jth row)
 % y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
 % J: the set of all panels
 % R: a cell array of all of the initial rotation matrix for each panel
-% tolR: tolerance for the rotation minimization
 % tol: tolerance for the algorithm minimization
 %
 % Outputs:
@@ -72,7 +68,7 @@ for i = 1:n/3
 end 
 
 % the first minimized rotation matrix
-RiOpt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
+RiOpt = iterativeRotationMin(x, y, Fj, Tj, J);
 
 % the first minimized y (using the new function)
 yNew = minY_V2(x, y, Fj, Tj, J, RiOpt, A);
@@ -136,7 +132,7 @@ end
 
 while err > tol 
 
-Ropt = iterativeRotationMin(x, y, Fj, Tj, Ti, J, tolR, R);
+Ropt = iterativeRotationMin(x, y, Fj, Tj, J);
 yNew = minY_V2(x, y, Fj, Tj, J, Ropt, A); 
 xNew = minX_V2(x, yNew, Fj, Tj, J, Ropt, U);
 

@@ -57,9 +57,7 @@ for j = 1:lenJ
 end
 
 %determining the N matrix
-nullSpace = null(U);
-
-nMatrix = nullSpace(:, 1)'.*nullSpace(:, 2);
+nMatrix = null(U);
 
 % pos vectors with respect to the center of the panel for all panels
 dij = zeros(3*mm, 1, lenJ);
@@ -83,11 +81,11 @@ M = -2*mvector;
 mTilde = -2*(nMatrix'*gmatrix*y + nMatrix'*M); 
 
 % determining the perturbation method
-mTilde(mTilde < 0.001) = 0;
+mTilde(mTilde < 0.00001) = 0;
 
 xTilde = pinv(nMatrix'*gmatrix*nMatrix)*mTilde;
 
-xMin = x + xTilde;
+xMin = x + nMatrix*xTilde;
 
 end
 
