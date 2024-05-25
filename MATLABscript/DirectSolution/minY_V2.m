@@ -24,8 +24,7 @@ function yMin = minY_V2(x, y, Fj, Tj, J, R, A)
 % Define the matrices that allow the 3D coord vector yi to be converted to
 % a list of coord vectors called y
 
-
-%% creating the k matrix
+% creating the k matrix
 n = length(y);
 lenJ = length(J);
 nn = length(Fj);

@@ -11,20 +11,16 @@
 %
 % Updated Date: 05/23/24
 %
-% the initial configuration consists of two panels that share a common edge
-% all of the six vertices of the panel can be determined based on two randomly 
-% generated points. Using the symmetry constraints imposed on these two points 
-% results in six fully defined points
+% The initial configuration consists of four panels that share common
+% edges. All of the nine vertices of the panels can be determined based on two user 
+% specified points. Using the symmetry constraints imposed on these two points 
+% results in nine fully defined points
 
 % Initial x-values
-%x1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
-%x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
-
-
 x1 = [0; 0; 0];
 x2 = [1; 1; 0];
 
-% x rigidity constraints- define as 
+% x rigidity constraint matrix
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
     -eye(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
     zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
@@ -35,10 +31,11 @@ A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3),z
     zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3), eye(3,3), zeros(3,3) % 
     zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3), zeros(3,3)]; 
     
-%
+% setting the x and y constraint matrix to be the same i.e. stating that
+% they have the same overall shape
 U = A;
 
-% x - rigidity constraints
+% x lattice vectrs
 e1 = [0; 2;0];
 e2 = [1;0;0];
 e3 = [0;0;0]; % new addition
@@ -52,10 +49,11 @@ x = zeros(27, 1); % chnaged size from 18 to 27
 x(1:6, 1) = [x1; x2];
 x(7:27, 1) = xU; 
 
+% Initial y-values
 y1 = [0;0;0];
 y2 = [0; 1;0];
 
-% y - rigidity constraints
+% y lattice vectors
 l1 = [0; 2; 0];
 l2 = [1; 0; 0];
 l3 = [0;0;0];% new addition
@@ -118,8 +116,8 @@ tol = 0.001;
 
 titles = {'Initial X', 'Initial Y', 'Final X', 'Final Y'};
 vectors = [x, y, xOpt, yOpt];
-visualizeSymmetry = true;
+visualizeLatticeVec = true;
 
 figure
-plot4vectors(vectors, titles, visualizeSymmetry);
+plot4vectors(vectors, titles, visualizeLatticeVec);
 

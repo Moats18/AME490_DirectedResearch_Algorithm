@@ -3,7 +3,7 @@ function xMin = minX_V2(x, y, Fj, Sj, J, R, U)
 % directly solves the linear equation to calculate the perturbation of the
 % initial x
 %
-%Inputs:
+% Inputs:
 %
 % Rigidity Constraints:
 % U: U is a matrix that contains the rigidity constraints such that Ux = h
@@ -18,12 +18,8 @@ function xMin = minX_V2(x, y, Fj, Sj, J, R, U)
 % R: a cell array of all of the rotation matrices for each panel
 % 
 % Outputs:
-%Xmin: x coordinate(2-D array) that minimizes the energy based on given
-%constraints
-
-% Define the matrices that allow the singular vector xi to be converted to
-% a list of vectors called x
-
+% Xmin: x coordinate(2-D array) that minimizes the energy based on given
+% constraints
 
 %creating the g matrix 
 m = length(x);
