@@ -21,6 +21,7 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, J)
 
 % setting the values of the initial cj and rij vectors
 for j = 1:length(J)
+
 % center of the panel calculation based on initial y vector
 [cj{j}, ~] = centerOfPanel(Fj(:, :, j), y);
 

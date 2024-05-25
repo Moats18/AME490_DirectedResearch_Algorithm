@@ -72,7 +72,6 @@ end
 % eliminates the need to utilize the tranpose
 M = 2*mvector; 
 
-dot(mvector,nspace1(:, 1));
 
 %calculating d scalar 
 dscalar = 0;

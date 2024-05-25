@@ -80,10 +80,10 @@ end
 B = -2*bVector; 
 
 % calculation of bTilde
-bTilde = -2*(nMatrix'*kMatrix*y + nMatrix'*B); 
+bTilde = -1*(nMatrix'*kMatrix*y + nMatrix'*B); % removed mutlipe of 2 (for some reason)
 
 % determining the perturbation method
-bTilde(bTilde < 0.00001) = 0;
+bTilde(abs(bTilde)<1e-3)=0;
 
 yTilde = pinv(nMatrix'*kMatrix*nMatrix)*bTilde;
 

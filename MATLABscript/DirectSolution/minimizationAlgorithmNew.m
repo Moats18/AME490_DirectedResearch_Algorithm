@@ -7,7 +7,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U,
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Date: 03/27/24
+% Updated Date: 05/23/24
 %
 % Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
@@ -15,7 +15,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U,
 %
 % Indexing Inputs:
 % Tj: a 3D array of the set of all x's within each panel 
-% Tj size is 1 by verticesPerPanel  by nuPanels;
+% Tj size is 1 by verticesPerPanel  by numPanels;
 % x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
 % Fj: a 2D array of the set of all y's within each panel (the jth panel
 % corresponds to the jth row)
@@ -37,6 +37,7 @@ E{1} = 0;
 rij = zeros(3*length(Tj), 1, length(J));
 
 % setting the values of the initial cj and rij vectors
+
 for j = 1:length(J)
 % center of the panel calculation based on initial y vector
 [cj{j}, ~] = centerOfPanel(Fj(:, :, j), y);
@@ -48,7 +49,7 @@ end
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
     k = Fj(:, i, j);
-    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2;
+    E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2; 
     end
 end 
 
@@ -67,47 +68,27 @@ for i = 1:n/3
     xM{i} = xX;
 end 
 
-% the first minimized rotation matrix
-RiOpt = iterativeRotationMin(x, y, Fj, Tj, J);
+% the first minimized y 
+yNew = minY_V2(x, y, Fj, Tj, J, R, A);
 
-% the first minimized y (using the new function)
-yNew = minY_V2(x, y, Fj, Tj, J, RiOpt, A);
+% the first minimized x 
+xNew = minX_V2(x, yNew, Fj, Tj, J, R, U);
 
-figure
-subplot3dvec(y, 'y', yNew, 'yNew');
+% the first optimized rotation
+RiOpt = iterativeRotationMin(xNew, yNew, Fj, Tj, J);
 
-% the first minimized x (using the new function)
-xNew = minX_V2(x, yNew, Fj, Tj, J, RiOpt, U);
+for j = 1:length(J)
+% center of the panel calculation based on initial y vector
+[cj{j}, ~] = centerOfPanel(Fj(:, :, j), yNew);
 
-figure
-subplot3dvec(x, 'x', xNew, 'xNew')
-hold off 
-
-% Defining the matrix that allows the vector y to be factored out
-% Aij{1, 1} is a 3 by 3*n matrix
-for j = 1:lenJ
-    l = length(Fj(:, :, j));
-    sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
-    for i = 1:length(Fj(:, :, j))
-        k = Fj(:, i, j);
-        Aij{i, j} = xM{k} - sum;
-    end
-end
-
-% Defining the matrix that allows the vector x to be factored out
-% Qij{1, 1} is a 3 by 3*n matrix
-for j = 1:lenJ
-    l = length(Fj(:, :, j));
-    sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
-    for i = 1:length(Fj(:, :, j))
-        k = Fj(:, i, j);
-        Qij{i, j} = xM{k} - sum;
-    end
-end
+% pos vectors with respect to the center of the panel
+[~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), xNew);
+end 
 
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    E{num} = E{num} + norm(Aij{i, j}*yNew - RiOpt{j}*(Qij{i, j}*xNew))^2;
+    k = Fj(:, i, j); 
+    E{num} = E{num} + norm(yNew(3*k-2:3*k, 1) - cj{j} - RiOpt{j}*rij(3*i-2:3*i, 1, j))^2; 
     end
 end 
 
@@ -124,7 +105,7 @@ ylabel("Energy [m^2]");
 title("Minimization Algorithm");
 
 hold on
-for i=2:length(E)
+for i= 1:length(E)
 scatter(i, E{i}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
 drawnow; % ensures that the updated point is plotted
 pause(0.5); %pausing for 1/10 of a second
@@ -132,24 +113,37 @@ end
 
 while err > tol 
 
-Ropt = iterativeRotationMin(x, y, Fj, Tj, J);
-yNew = minY_V2(x, y, Fj, Tj, J, Ropt, A); 
-xNew = minX_V2(x, yNew, Fj, Tj, J, Ropt, U);
+yNew = minY_V2(x, y, Fj, Tj, J, R, A); 
+xNew = minX_V2(x, yNew, Fj, Tj, J, R, U);
+R = iterativeRotationMin(xNew, yNew, Fj, Tj, J);
 
 count = num +  loop;
 E{count} = 0;
+
+for j = 1:length(J)
+% center of the panel calculation based on y vector
+[cj{j}, ~] = centerOfPanel(Fj(:, :, j), yNew);
+
+% pos vectors with respect to the center of the panel
+[~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), xNew);
+end 
+
+
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
-    E{count} = E{count} + norm(Aij{i, j}*yNew - Ropt{j}*(Qij{i, j}*xNew))^2;
+    k = Fj(:, i, j);     
+    E{count} = E{count} + norm(yNew(3*k-2:3*k, 1) - cj{j} - R{j}*rij(3*i-2:3*i, 1, j))^2; 
     end
 end 
 
 err = abs(E{count}-E{count-1});
 
 % Updating the values to be used at the beginning of the next loop
-R = Ropt; 
 y = yNew;
 x = xNew;
+
+%figure
+%subplot3dvec(yNew, 'yNew', xNew, 'xNew');
 
 % showing the results of the algorithm in real time
 disp("-------------------------------------")
@@ -163,8 +157,9 @@ disp("Current Error Value: " + num2str(err));
 % plotting the results of the algorithm in real time
 hold on
 scatter(count, E{count}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+plot(count, E{count});
 drawnow; % ensures that the updated point is plotted
-pause(0.5); %pausing for 1/10 of a second
+pause(0.1); %pausing for 1/2 of a second
 loop = loop + 1;
 hold off
 end

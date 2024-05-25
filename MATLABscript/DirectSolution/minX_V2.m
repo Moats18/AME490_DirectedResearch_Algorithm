@@ -38,6 +38,7 @@ end
 
 % Defining the matrix that allows the vector x to be factored out
 % Gij{1, 1} is a 3 by n matrix
+
 for j = 1:lenJ
     l = length(Fj(:, :, j));
     part_sum = R{j}*(1/l)*calcMatrixSum(zM, Fj(:, :, j)); 
@@ -63,8 +64,9 @@ nMatrix = null(U);
 dij = zeros(3*mm, 1, lenJ);
 
 for j = 1:lenJ
-[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j),y);
+[~, dij(:,:,j)] = centerOfPanel(Sj(:,:,j), y);
 end
+
 
 %calculation of m vector
 mvector = zeros(m,1);
@@ -73,12 +75,13 @@ for j = 1:lenJ
        mvector = mvector +  (Gij{i,j}'*dij(3*i-2:3*i, 1, j)); %error?
     end
 end
+
 % M is a 1 by 3*m vector (using the dot product function in MATLAB
 % eliminates the need to utilize the tranpose
 M = -2*mvector; 
 
 % calculation of mTilde
-mTilde = -2*(nMatrix'*gmatrix*y + nMatrix'*M); 
+mTilde = -1*(nMatrix'*gmatrix*x + nMatrix'*M); 
 
 % determining the perturbation method
 mTilde(mTilde < 0.00001) = 0;

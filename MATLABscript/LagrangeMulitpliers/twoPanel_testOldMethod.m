@@ -9,19 +9,19 @@
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Date: 03/27/24
+% Updated Date: 05/23/24
 %
 % the initial configuration consists of two panels that share a common edge
 % all of the six vertices of the panel can be determined based on two randomly 
 % generated points. Using the symmetry constraints imposed on these two points 
 % results in six fully defined points
-%rng(1);
+%
 % Initial x-values
 %x1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 %x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
-x1 = [0;0;0];
-x2 = [2; 1;0];
+x1 = [0; 0; 0];
+x2 = [1; 0.5; 0];
 
 % x rigidity constraints- define as 
 A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
@@ -38,7 +38,7 @@ U = A;
 %2 = randi(5, 3, 1);
 %e2 = randi(5, 3, 1);
 e1 = [1;0;0];
-e2 = [0;2;0];
+e2 = [0;1;0];
 e3 = [0;0;0]; % new addition
 h = [e1; e2; e1; e1; e3]; % removed e2 from the fourth entry (redundant constraint)
 
@@ -61,7 +61,7 @@ y2 = [1; 1;0];
 %l1 = randi(5, 3, 1);
 %l2 = randi(5, 3, 1);
 l1 = [1;0;0];
-l2 = [0;2;0];
+l2 = [0; 2;0];
 l3 = [0;0;0];% new addition
 e = [l1; l2; l1; l1; l3]; %removed l2
 
@@ -106,11 +106,10 @@ for j = 1:length(J)
 R{j} = eye(3); % identity matrix
 end
 
-% determine the initial tolerance for the rotation minimization
-tolR = 0.1;
-
 % determine the initial tolerance for the entire algorithm minimization
 tol = 0.001;
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, U, h, e, tol);
+figure
+subplot3dvec(yOpt, 'yOpt', xOpt, 'xOpt');
 

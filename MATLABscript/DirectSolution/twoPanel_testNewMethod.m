@@ -9,86 +9,88 @@
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Date: 03/27/24
+% Updated Date: 05/23/24
 %
 % the initial configuration consists of two panels that share a common edge
 % all of the six vertices of the panel can be determined based on two randomly 
 % generated points. Using the symmetry constraints imposed on these two points 
 % results in six fully defined points
-%rng(1);
+
 % Initial x-values
 %x1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 %x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
-x1 = [0;0;0];
-x2 = [2;1;0];
+
+x1 = [0; 0; 0];
+x2 = [1; 1; 0];
 
 % x rigidity constraints- define as 
-A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
-    -eye(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3);
-    zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3);
-    %zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3), -eye(3, 3); 
-    zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3)
-    eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)]; % new addition
+A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
+    -eye(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
+    zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
+    %zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3),zeros(3,3), -eye(3, 3); %c
+    zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3),zeros(3,3) ,zeros(3,3),zeros(3,3),zeros(3,3)
+    eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3)
+    zeros(3,3),zeros(3,3),zeros(3,3), -eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3), eye(3,3) %
+    zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),-eye(3,3),zeros(3,3),zeros(3,3), eye(3,3), zeros(3,3) % 
+    zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),-eye(3,3),eye(3,3),zeros(3,3), zeros(3,3)]; 
+    
 %
 U = A;
 
 % x - rigidity constraints
-%e1 = randi(5, 3, 1);
-%2 = randi(5, 3, 1);
-%e2 = randi(5, 3, 1);
-e1 = [1;0;0];
-e2 = [0;2;0];
+e1 = [0; 2;0];
+e2 = [1;0;0];
 e3 = [0;0;0]; % new addition
-h = [e1; e2; e1; e1; e3]; % removed e2 from the fourth entry (redundant constraint)
+h = [e2; e1; e2; e2; e3; e2; e2; e2]; 
 
 % populate the x vector
-xU = A(1:15, 7:18)\(h-(A(1:15, 1:6)*[x1; x2])); % 
+xU = A(1:24, 7:27)\(h-(A(1:24, 1:6)*[x1; x2])); % 
 
 % final x vector
-x = zeros(18, 1); % chnaged size from 15 to 18
+x = zeros(27, 1); % chnaged size from 18 to 27
 x(1:6, 1) = [x1; x2];
-x(7:18, 1) = xU; % changed size from 1:15 to 1:18
-
-% Initial y-valudes
-%y1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
-%y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
+x(7:27, 1) = xU; 
 
 y1 = [0;0;0];
-y2 = [1; 1;0];
+y2 = [0; 1;0];
 
 % y - rigidity constraints
-%l1 = randi(5, 3, 1);
-%l2 = randi(5, 3, 1);
-l1 = [1;0;0];
-l2 = [0;2;0];
+l1 = [0; 2; 0];
+l2 = [1; 0; 0];
 l3 = [0;0;0];% new addition
-e = [l1; l2; l1; l1; l3]; %removed l2
+e = [l2; l1; l2; l2; l3; l2; l2; l2]; 
 
 % populate the y vector
-yU = A(1:15, 7:18)\(e-(A(1:15, 1:6)*[y1; y2]));% chnaged size from 1:15 to 1:18
+yU = A(1:24, 7:27)\(e-(A(1:24, 1:6)*[y1; y2]));% chnaged size from 1:15 to 1:18
 
 % final y vector
-y = zeros(18, 1);% chnaged size from 15 to 18
+y = zeros(27, 1);% chnaged size from 15 to 18
 y(1:6, 1) = [y1; y2];
-y(7:18, 1) = yU;% chnaged size from 1:15 to 1:18
+y(7:27, 1) = yU;% chnaged size from 1:15 to 1:18
 
 % populate the vector numbering all of the panels
-J = [1, 2];
+J = [1, 2, 3, 4];
 
 % determine the index set for each panel 
 % a cell array of the set of all y's within each panel
 F1 = [1, 2, 5, 6];
 F2 = [2, 3, 4, 5];
+F3 = [5, 4, 9, 8];
+F4 = [6, 5, 8, 7];
 % a cell array of the set of all x's within each panel 
 T1 = [1, 2, 5, 6];
 T2 = [2, 3, 4, 5];
+T3 = F3;
+T4 = F4;
 
 % a 3-d array that contains the index set of x coordinates within a given
 % panel j
 Tj = zeros(1, length(T1), length(J));
 Tj(1, :, 1) = T1;
 Tj(1, :, 2) = T2;
+Tj(1, :, 3) = T3;
+Tj(1, :, 4) = T4;
 
 Fj = Tj;
 
@@ -96,20 +98,28 @@ Fj = Tj;
 t1 = 1;
 t2 = [1, 2];
 t3 = 2;
-t4 = 2;
-t5 = [1, 2];
-t6 = 1;
-Ti = {t1, t2, t3, t4, t5, t6}; %the set of all panels associated with index i
+t4 = [2, 3];
+t5 = [1, 2, 3, 4];
+t6 = [1, 4];
+t7 = 4;
+t8 = [3, 4];
+t9 = 3;
+Ti = {t1, t2, t3, t4, t5, t6, t7, t8, t9}; %the set of all panels associated with index i
 
 % Initial R 
 for j = 1:length(J)
 R{j} = eye(3); % identity matrix
 end
 
-% determine the initial tolerance for the rotation minimization
-tolR = 0.1;
-
 % determine the initial tolerance for the entire algorithm minimization
-tol = 0.00001;
+tol = 0.001;
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);
+
+titles = {'Initial X', 'Initial Y', 'Final X', 'Final Y'};
+vectors = [x, y, xOpt, yOpt];
+visualizeSymmetry = true;
+
+figure
+plot4vectors(vectors, titles, visualizeSymmetry);
+
