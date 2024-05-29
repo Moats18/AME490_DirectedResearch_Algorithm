@@ -1,4 +1,4 @@
-function Ropt = iterativeRotationMin(x, y, Fj, Tj, J)
+function Ropt = rotationMin(x, y, Fj, Tj, J)
 % 
 % uses quaternions to conver the minimization into an eigenvalue probelm, 
 % the iterative rotation minimization determines the rotation matrix for each panel

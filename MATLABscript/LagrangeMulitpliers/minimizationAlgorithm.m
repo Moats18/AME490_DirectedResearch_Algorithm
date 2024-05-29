@@ -86,7 +86,7 @@ subplot3dvec(x, 'x', xNew, 'xNew')
 hold off 
 
 % the first optimized rotation
-RiOpt = iterativeRotationMin(xNew, yNew, Fj, Tj, J);
+RiOpt = rotationMin(xNew, yNew, Fj, Tj, J);
 
 for j = 1:length(J)
 % center of the panel calculation based on initial y vector
@@ -126,7 +126,7 @@ while err > tol
 
 yNew = minY(x, y, Fj, Tj, J, R, A, e); 
 xNew = minX(x, yNew, Fj, Tj, J, R, U, h);
-R = iterativeRotationMin(xNew, yNew, Fj, Tj, J);
+R = rotationMin(xNew, yNew, Fj, Tj, J);
 
 count = num +  loop;
 E{count} = 0;

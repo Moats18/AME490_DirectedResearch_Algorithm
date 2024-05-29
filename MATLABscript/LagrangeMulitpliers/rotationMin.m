@@ -1,4 +1,4 @@
-function Ropt = iterativeRotationMin(x, y, Fj, Tj, J)
+function Ropt = rotationMin(x, y, Fj, Tj, J)
 % 
 % uses quaternions to conver the minimization into an eigenvalue probelm, 
 % the iterative rotation minimization determines the rotation matrix for each panel
@@ -11,7 +11,6 @@ function Ropt = iterativeRotationMin(x, y, Fj, Tj, J)
 % Fj: a cell array of the set of all y's within each panel 
 % y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
 %
-% Ti: a cell array containing the set of all panels associated with index i
 % J: the set of all panels
 % tol: the tolerance that the convergence has to be less than
 % R: a cell array of the initial rotation matrix for each panel 

@@ -16,9 +16,6 @@
 % generated points. Using the symmetry constraints imposed on these two points 
 % results in six fully defined points
 %
-% Initial x-values
-%x1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
-%x2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
 
 x1 = [0; 0; 0];
 x2 = [1; 0.5; 0];
@@ -34,9 +31,6 @@ A = [-eye(3,3),zeros(3,3),zeros(3,3),zeros(3,3),zeros(3,3),eye(3,3);
 U = A;
 
 % x - rigidity constraints
-%e1 = randi(5, 3, 1);
-%2 = randi(5, 3, 1);
-%e2 = randi(5, 3, 1);
 e1 = [1;0;0];
 e2 = [0;1;0];
 e3 = [0;0;0]; % new addition
@@ -51,15 +45,10 @@ x(1:6, 1) = [x1; x2];
 x(7:18, 1) = xU; % changed size from 1:15 to 1:18
 
 % Initial y-valudes
-%y1 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
-%y2 = randi(10, 3, 1); %generates an array of 3 random numbers from 1-10 
-
 y1 = [0;0;0];
 y2 = [1; 1;0];
 
 % y - rigidity constraints
-%l1 = randi(5, 3, 1);
-%l2 = randi(5, 3, 1);
 l1 = [1;0;0];
 l2 = [0; 2;0];
 l3 = [0;0;0];% new addition
@@ -91,15 +80,6 @@ Tj(1, :, 1) = T1;
 Tj(1, :, 2) = T2;
 
 Fj = Tj;
-
-% determine the index set for each index
-t1 = 1;
-t2 = [1, 2];
-t3 = 2;
-t4 = 2;
-t5 = [1, 2];
-t6 = 1;
-Ti = {t1, t2, t3, t4, t5, t6}; %the set of all panels associated with index i
 
 % Initial R 
 for j = 1:length(J)
