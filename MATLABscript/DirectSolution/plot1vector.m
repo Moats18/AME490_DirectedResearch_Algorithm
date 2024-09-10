@@ -33,10 +33,13 @@ end
 
 
 % Use the plot function to draw the horizontal line
-plot([x(1), x(6)], [y(1), y(6)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
-plot([x(2), x(5)], [y(2), y(5)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
-plot([x(5), x(8)], [y(5), y(8)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
-plot([x(4), x(9)], [y(4), y(9)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(1), x(2)], [y(1), y(2)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(12), x(9)], [y(12), y(9)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(3), x(6)], [y(3), y(6)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(7), x(8)], [y(7), y(8)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(12), x(1)], [y(12), y(1)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(12), x(3)], [y(12), y(3)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+plot([x(6), x(9)], [y(6), y(9)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
 
 for i = 1:length(labels)
     text(x(i), y(i), labels{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
@@ -44,16 +47,16 @@ end
 
 %visualization of the lattice vectors 
 if vis == 1
-plot([x(1) - 0.5*gap, x(1) - 0.5*gap], [y(1), y(3)], 'r-', 'LineWidth', 0.5);
-plot([x(1) - 0.3, x(1) - 0.1], [y(3), y(3)], 'r-', 'LineWidth', 0.5);
-plot([x(1) - 0.3, x(1) - 0.1], [y(1), y(1)], 'r-', 'LineWidth', 0.5);
-h = text(x(1) -0.04, (y(3)+y(1))/1.5, "E1 = " + num2str(y(3) - y(1)), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'Color', 'r');
+plot([x(1) - 0.5*gap, x(1) - 0.5*gap], [y(10), y(2)], 'r-', 'LineWidth', 0.5);
+plot([x(1) - 0.3, x(1) - 0.1], [y(10), y(10)], 'r-', 'LineWidth', 0.5);
+plot([x(1) - 0.3, x(1) - 0.1], [y(2), y(2)], 'r-', 'LineWidth', 0.5);
+h = text(x(1) -0.04, (y(11)+y(1))/1.5, "E1 = " + num2str(y(10) - y(2)), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'Color', 'r');
 set(h,'Rotation',90);
 
-plot([x(1), x(6)], [y(1)- 0.5*gap, y(1)- 0.5*gap], 'r-', 'LineWidth', 0.5); 
+plot([x(1), x(5)], [y(1)- 0.5*gap, y(1)- 0.5*gap], 'r-', 'LineWidth', 0.5); 
 plot([x(1), x(1)], [y(1) - 0.3, y(1) - 0.1], 'r-', 'LineWidth', 0.5);
-plot([x(6), x(6)], [y(1) - 0.3, y(1) - 0.1], 'r-', 'LineWidth', 0.5);
-text((x(1)+x(6))/1.5, y(1)-0.5*gap, "E2 = " + num2str(x(6) - x(1)), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'Color', 'r');
+plot([x(5), x(5)], [y(1) - 0.3, y(1) - 0.1], 'r-', 'LineWidth', 0.5);
+text((x(1)+x(5))/1.5, y(1)-0.5*gap, "E2 = " + num2str(x(5) - x(1)), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'Color', 'r');
 end
 
 end
