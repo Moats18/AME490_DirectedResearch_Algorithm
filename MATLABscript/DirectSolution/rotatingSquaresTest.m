@@ -5,17 +5,15 @@
 % "Elastic Energy Approximation and Minimization Algorithm for Foldable
 % Meshes"
 %
-% By: Antoine Moats, Niharika Sashidhar, Andrew Song
+% By: Andrew Song
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
 % Updated Date: 08/12/24
 %
 % The initial configuration consists of four panels that share common
-% edges. All of the nine vertices of the panels can be determined based on two user 
-% specified points. Using the symmetry constraints imposed on these two points 
-% results in nine fully defined points
-
+% edges. This constraint is relaxed following the rotating squares problem.
+%
 % Initial x-values
 s = 0.5;
 x1 = [0; 0; 0];
@@ -32,14 +30,18 @@ x11 = [0; 2*s; 0];
 x12 = [0; s; 0];
 
 % x rigidity constraint matrix (4x12) of (3x3) = (12x36)
-A = [-eye(3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
+U = [-eye(3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
      zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3);
      zeros(3,3), -eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3);
      zeros(3,3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3)];
     
+    
 % setting the x and y constraint matrix to be the same i.e. stating that
 % they have the same overall shape
-U = A;
+A = [-eye(3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
+     zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3);
+     zeros(3,3), -eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3);
+     zeros(3,3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3)];
 
 % x lattice vectors
 e1 = [0; 2*s; 0];
@@ -107,7 +109,7 @@ R{j} = eye(3); % identity matrix
 end
 
 % determine the initial tolerance for minimization
-tol = 10^(-10);
+tol = 10^(-5);
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);
 

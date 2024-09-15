@@ -1,4 +1,4 @@
-function [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, U, h, e, tol)
+ffunction [yOpt, xOpt, Ropt] = minimizationAlgorithm(x, y, Fj, Tj, J, R, A, U, h, e, tol)
 % 
 % Based on the paper: "Elastic Energy Approximation and Minimization
 % Algorithm for Foldable Meshes" 
