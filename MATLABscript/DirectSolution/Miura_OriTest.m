@@ -9,7 +9,7 @@
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Updated Date: 08/12/24
+% Updated Date: 10/20/24
 %
 % The initial configuration consists of four panels that share common
 % edges. All of the nine vertices of the panels can be determined based on two user 
@@ -30,18 +30,16 @@ x8 = [s*cos(gamma); s*sin(gamma)+2*s; 0];
 x9 = [2*s*cos(gamma); 2*s; 0];
 
 % x rigidity constraint matrix (4x12) of (3x3) = (12x36)
-U = [-eye(3,3), zeros(3,3), eye(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
+U = [-eye(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
+     zeros(3,3), zeros(3), zeros(3,3), eye(3,3), zeros(3,3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
+     zeros(3,3), zeros(3,3), zeros(3,3), zeros(3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3), eye(3,3);
      -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3);
-     zeros(3,3), zeros(3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3);
-     zeros(3,3), zeros(3,3), zeros(3,3), zeros(3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3), eye(3,3)];
-    
-    
+     zeros(3,3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3), zeros(3,3);
+     zeros(3,3), zeros(3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3)];
+ 
 % setting the x and y constraint matrix to be the same i.e. stating that
 % they have the same overall shape
-A = [-eye(3,3), zeros(3,3), eye(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
-     -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3);
-     zeros(3,3), zeros(3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3);
-     zeros(3,3), zeros(3,3), zeros(3,3), zeros(3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3), eye(3,3)];
+A = U;
 
 % final x vector
 x = [x1; x2; x3; x4; x5; x6; x7; x8; x9];
@@ -60,6 +58,8 @@ psi = asin(sin(theta)*sin(gamma));
 phi = asin(sin(eta)/sin(gamma));
 o = H/tan(theta);
 
+% 
+lambda = 0.8;
 y1 = lambda*[0; 0; 0];
 y2 = lambda*[S; s*cos(eta); 0];
 y3 = lambda*[2*S; 0; 0];
@@ -113,3 +113,7 @@ vectors = [x, y, xOpt, yOpt];
 visualizeLatticeVec = true;
 
 plot4vectors3D(vectors, titles, visualizeLatticeVec);
+
+
+
+

@@ -52,7 +52,7 @@ for j = 1:length(J)
        Mkl11 = dot(r, ckl);
        Mkl12 = transpose(cross(r, ckl));
        Mkl21 = cross(r, ckl);
-       Mkl22 = ckl*r.' + transpose(rkl_cross)*(ckl_cross);
+       Mkl22 = ckl*r.' - transpose(rkl_cross)*(ckl_cross);
 
        Mkl{i,j} = [Mkl11    Mkl12(1)   Mkl12(2)   Mkl12(3);
                    Mkl21(1) Mkl22(1,1) Mkl22(1,2) Mkl22(1,3);
@@ -70,7 +70,7 @@ for j = 1:length(J)
 
     % rounding the small numeric values to zero
     roundedMl = Ml(:,:,j);
-    roundedMl(abs(roundedMl)<1e-3) = 0;
+    roundedMl(abs(roundedMl)<1e-4) = 0;
 
     [V, D] = eig(roundedMl); % eigenvectors V and eigenvalues D
     
@@ -88,9 +88,9 @@ for j = 1:length(J)
         eigenVal = col;
     end
 
-    q = V(:, eigenVal);
-    q = q/norm(q);
-
+    q = V(:, eigenVal); % eigenvector associated with greatest eigenvalue
+    q = q/norm(q); % normalized
+    % unpack quaternion form into a rotation tensor
     qr = q(1);
     v = q(2:4);
     v_cross = [0       -v(3) v(2);

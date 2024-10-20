@@ -75,7 +75,7 @@ yNew = minY_V2(x, y, Fj, Tj, J, R, A);
 xNew = minX_V2(x, yNew, Fj, Tj, J, R, U);
 
 % the first optimized rotation
-RiOpt = rotationMin(xNew, yNew, Fj, Tj, J);
+RiOpt = rotationMin_new(xNew, yNew, Fj, Tj, J);
 
 for j = 1:length(J)
 % center of the panel calculation based on initial y vector
