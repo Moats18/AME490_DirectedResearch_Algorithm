@@ -1,4 +1,3 @@
-%
 % This script is designed as a test case for the MATLAB function 
 % minimizationAlgorithm which is based on the paper:
 % 
@@ -9,46 +8,30 @@
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Updated Date: 10/20/24
+% Updated Date: 12/06/24.
 %
-% The initial configuration consists of four panels that share common
-% edges. All of the nine vertices of the panels can be determined based on two user 
-% specified points. Using the symmetry constraints imposed on these two points 
-% results in nine fully defined points
+% The initial configuration consists of four panels in the Miura-Ori
+% configuration. This test is interested in the folding of these four 
+% panels and the resultant energy calculation.
 
 % Initial x-values
 s = 0.5;
 gamma = pi/6;
-x1 = [0; 0; 0];
-x2 = [s*cos(gamma); s*sin(gamma); 0];
-x3 = [2*s*cos(gamma); 0; 0];
-x4 = [2*s*cos(gamma); s; 0];
-x5 = [s*cos(gamma); s*sin(gamma)+s; 0];
-x6 = [0; s; 0];
-x7 = [0; 2*s; 0];
-x8 = [s*cos(gamma); s*sin(gamma)+2*s; 0];
-x9 = [2*s*cos(gamma); 2*s; 0];
-
-% x rigidity constraint matrix (4x12) of (3x3) = (12x36)
-U = [-eye(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
-     zeros(3,3), zeros(3), zeros(3,3), eye(3,3), zeros(3,3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3);
-     zeros(3,3), zeros(3,3), zeros(3,3), zeros(3), zeros(3,3), zeros(3,3), -eye(3), zeros(3,3), eye(3,3);
-     -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3), zeros(3,3), zeros(3,3);
-     zeros(3,3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3), zeros(3,3);
-     zeros(3,3), zeros(3), -eye(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), zeros(3,3), eye(3,3)];
- 
-% setting the x and y constraint matrix to be the same i.e. stating that
-% they have the same overall shape
-A = U;
-
-% final x vector
+x1 = [0; 0];
+x2 = [s*cos(gamma); s*sin(gamma)];
+x3 = [2*s*cos(gamma); 0];
+x4 = [2*s*cos(gamma); s];
+x5 = [s*cos(gamma); s*sin(gamma)+s];
+x6 = [0; s];
+x7 = [0; 2*s];
+x8 = [s*cos(gamma); s*sin(gamma)+2*s];
+x9 = [2*s*cos(gamma); 2*s];
 x = [x1; x2; x3; x4; x5; x6; x7; x8; x9];
 
-% Initial y-values
+% First, some useful parameters of the Miura-Ori fold:
 s = 0.5;
-theta = pi/4;
-
-% useful parameters of a Miura-Ori Origami
+theta = pi/6;
+lambda = 1;
 H = s*sin(theta)*sin(gamma);
 S = s*cos(theta)*tan(gamma)/sqrt(1+cos(theta)^2*tan(gamma)^2);
 L = s*sqrt(1-sin(theta)^2*sin(gamma)^2);
@@ -58,8 +41,7 @@ psi = asin(sin(theta)*sin(gamma));
 phi = asin(sin(eta)/sin(gamma));
 o = H/tan(theta);
 
-% 
-lambda = 0.8;
+% Initial y-values
 y1 = lambda*[0; 0; 0];
 y2 = lambda*[S; s*cos(eta); 0];
 y3 = lambda*[2*S; 0; 0];
@@ -69,9 +51,25 @@ y6 = lambda*[0; L; H];
 y7 = lambda*[0; 2*L; 0];
 y8 = lambda*[S; 2*L+V; 0];
 y9 = lambda*[2*S; 2*L; 0];
-
-% final y vector
 y = [y1; y2; y3; y4; y5; y6; y7; y8; y9];
+
+% x rigidity constraint matrix (4x12) of (2x2) = (8x24)
+U = [eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2);
+    -eye(2), zeros(2), eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2);
+     zeros(2), zeros(2), zeros(2), eye(2), zeros(2), -eye(2), zeros(2), zeros(2), zeros(2);
+     zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), -eye(2), zeros(2), eye(2);
+     -eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), eye(2), zeros(2), zeros(2);
+     zeros(2), -eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), eye(2), zeros(2);
+     zeros(2), zeros(2), -eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), eye(2);];
+    
+% x rigidity constraint matrix (4x12) of (3x3) = (12x36)
+A = [eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3);
+    -eye(3), zeros(3), eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3);
+     zeros(3), zeros(3), zeros(3), eye(3), zeros(3), -eye(3), zeros(3), zeros(3), zeros(3);
+     zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), -eye(3), zeros(3), eye(3);
+     -eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), eye(3), zeros(3), zeros(3);
+     zeros(3), -eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), eye(3), zeros(3);
+     zeros(3), zeros(3), -eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), eye(3);];
 
 % populate the vector numbering all of the panels
 J = [1, 2, 3, 4];
@@ -100,20 +98,16 @@ Fj = Tj;
 
 % Initial R 
 for j = 1:length(J)
-R{j} = eye(3); % identity matrix
+    R{j} = eye(3); % identity matrix
 end
 
 % determine the initial tolerance for minimization
-tol = 10^(-2);
+tol = 10^(-5);
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);
 
 titles = {'Initial X', 'Initial Y', 'Final X', 'Final Y'};
-vectors = [x, y, xOpt, yOpt];
+vectors = {x, y, xOpt, yOpt};
 visualizeLatticeVec = true;
 
-plot4vectors3D(vectors, titles, visualizeLatticeVec);
-
-
-
-
+plot4vectors3D(vectors, titles, visualizeLatticeVec, "Miura");
