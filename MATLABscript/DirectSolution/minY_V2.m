@@ -11,7 +11,7 @@ function yMin = minY_V2(x, y, Fj, Tj, J, R, A)
 % Indexing Inputs:
 % Tj: a cell array of the set of all x's within each panel(the jth panel
 % corresponds to the jth row)
-% x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
+% x: x coordinate 2-D array (2*n by 1 where n is the number of indices)
 % Fj: a 2D array of the set of all y's within each panel (the jth panel
 % corresponds to the jth row)
 % y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
@@ -40,7 +40,7 @@ end
 
 for j = 1:lenJ
     l = length(Fj(:, :, j));
-    sum = (1/l)*calcMatrixSum(xM, Fj(:, :, j));
+    sum = (1/l)*calcMatrixSum_y(xM, Fj(:, :, j));
     for i = 1:length(Fj(:, :, j))
         k = Fj(:, i, j);
         Aij{i, j} = xM{k} - sum;
@@ -52,7 +52,7 @@ kMatrix = zeros(n, n);
 
 for j = 1:lenJ
     for i = 1:length(Fj(:, :, j))
-    kMatrix = kMatrix + 2*Aij{i, j}'*Aij{i, j};
+        kMatrix = kMatrix + 2*Aij{i, j}'*Aij{i, j};
     end
 end
 
@@ -60,10 +60,10 @@ end
 nMatrix = null(A);
 
 % pos vectors with respect to the center of the panel for all panels
-rij = zeros(3*nn, 1, lenJ);
+rij = zeros(2*nn, 1, lenJ);
 
 for j = 1:lenJ
-[~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), x);
+    [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), x);
 end 
 
 % calculation of the negative b vector
@@ -71,7 +71,10 @@ bVector = zeros(n, 1);
 for j = 1:lenJ
     for i = 1:length(Fj(:, :, j))
         %(rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'
-        bVector = bVector + (rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'; 
+        r_temp = rij(2*i-1:2*i, 1, j);
+        rij1 = r_temp(1);
+        rij2 = r_temp(2);
+        bVector = bVector + ([rij1 rij2 0]*R{j}'*Aij{i, j})'; 
     end
 end
 
@@ -79,10 +82,10 @@ end
 B = -2*bVector; 
 
 % calculation of bTilde
-bTilde = -1*(nMatrix'*kMatrix*y + nMatrix'*B); % removed mutlipe of 2 (for some reason)
+bTilde = -1 * (nMatrix'*kMatrix*y + nMatrix'*B);
 
 % determining the perturbation method
-bTilde(abs(bTilde)<1e-3)=0;
+bTilde(abs(bTilde)<1e-5)=0;
 
 yTilde = pinv(nMatrix'*kMatrix*nMatrix)*bTilde;
 
