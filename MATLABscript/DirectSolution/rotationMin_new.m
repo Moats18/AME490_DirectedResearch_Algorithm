@@ -7,7 +7,7 @@ function Ropt = rotationMin_new(x, y, Fj, Tj, J)
 %
 % inputs:
 % Tj: a cell array of the set of all x's within each panel 
-% x: x coordinate 2-D array (3*n by 1 where n is the number of indices)
+% x: x coordinate 2-D array (2*n by 1 where n is the number of indices)
 % Fj: a cell array of the set of all y's within each panel 
 % y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
 %
@@ -20,13 +20,14 @@ function Ropt = rotationMin_new(x, y, Fj, Tj, J)
 % Ropt: a cell array of the rotation matrices that minimize the elastic energy 
 
 % setting the values of the initial cj and rij vectors
-for j = 1:length(J)
+rij = zeros(2*length(Tj), 1, length(J));
 
+for j = 1:length(J)
     % center of the panel calculation based on initial y vector
-    [cj{j}, ~] = centerOfPanel(Fj(:, :, j), y);
+    [cj{j}, ~] = centerOfPanel3D(Fj(:, :, j), y);
 
     % pos vectors with respect to the center of the panel
-    [~, rij(:, :, j)] = centerOfPanel(Tj(:, :, j), x);
+    [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), x);
 end 
 
 % initialize rotation matrix
@@ -42,8 +43,9 @@ for j = 1:length(J)
        ckl_cross = [0           -ckl(3)    ckl(2);
                     ckl(3)      0          -ckl(1);
                     -ckl(2)     ckl(1)     0];
-
-       r = rij(3*i-2:3*i, 1, j);
+       
+       r_temp = rij(2*i-1:2*i, 1, j);
+       r = [r_temp(1); r_temp(2); 0]; % convert to R3 for SO3 rotation compatibility
 
        rkl_cross = [0       -r(3) r(2);
                     r(3)    0     -r(1);
@@ -54,13 +56,13 @@ for j = 1:length(J)
        Mkl21 = cross(r, ckl);
        Mkl22 = ckl*r.' - transpose(rkl_cross)*(ckl_cross);
 
-       Mkl{i,j} = [Mkl11    Mkl12(1)   Mkl12(2)   Mkl12(3);
-                   Mkl21(1) Mkl22(1,1) Mkl22(1,2) Mkl22(1,3);
-                   Mkl21(2) Mkl22(2,1) Mkl22(2,2) Mkl22(2,3);
-                   Mkl21(3) Mkl22(3,1) Mkl22(3,2) Mkl22(3,3)];
+       Mkl = [Mkl11    Mkl12(1)   Mkl12(2)   Mkl12(3);
+              Mkl21(1) Mkl22(1,1) Mkl22(1,2) Mkl22(1,3);
+              Mkl21(2) Mkl22(2,1) Mkl22(2,2) Mkl22(2,3);
+              Mkl21(3) Mkl22(3,1) Mkl22(3,2) Mkl22(3,3)];
 
-       Mkl_sym{i,j} = (Mkl{i,j}+Mkl{i,j}.')/2;
-       Ml(:,:,j) = Ml(:,:,j) + Mkl_sym{i,j};
+       Mkl_sym = (Mkl+Mkl.')/2;
+       Ml(:,:,j) = Ml(:,:,j) + Mkl_sym;
     end
 end
 
@@ -68,13 +70,13 @@ end
 
 for j = 1:length(J)
 
-    % rounding the small numeric values to zero
+    % rounding small numeric values to zero
     roundedMl = Ml(:,:,j);
     roundedMl(abs(roundedMl)<1e-4) = 0;
 
     [V, D] = eig(roundedMl); % eigenvectors V and eigenvalues D
     
-    % rounding the small numeric values to zero
+    % rounding small numeric values to zero
     roundedD = D;
     roundedD(abs(roundedD)<1e-3)=0;
 
@@ -90,6 +92,7 @@ for j = 1:length(J)
 
     q = V(:, eigenVal); % eigenvector associated with greatest eigenvalue
     q = q/norm(q); % normalized
+
     % unpack quaternion form into a rotation tensor
     qr = q(1);
     v = q(2:4);
@@ -100,11 +103,4 @@ for j = 1:length(J)
 end
 
 Ropt = R;
-
-disp("Rotation matrices: ")
-disp(Ropt{1})
-disp(Ropt{2})
-disp(Ropt{3})
-disp(Ropt{4})
-
 end 
