@@ -81,7 +81,7 @@ R{j} = eye(3); % identity matrix
 end
 
 % determine the initial tolerance for minimization
-tol = 10^(-10);
+tol = 10^(-15);
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);
 

@@ -66,7 +66,7 @@ for j = 1:length(J)
 R{j} = eye(3); % identity matrix
 end
 
-tol = 0.00001;
+tol = 10^(-10);
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);
 
