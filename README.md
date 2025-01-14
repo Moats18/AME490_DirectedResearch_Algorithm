@@ -1,0 +1,2 @@
+This is an algorithm for the design of origami patterns. The algorithm is based on the comparison of a 2D reference configuration characterized by a set of lattice vectors and a 3D deformed configuration characterized by a different set of lattice vectors. 
+Using a spring approximation for the elastic energy, linear constraints can be applied to each node, allowing for the energy to be minimized iteratively.
