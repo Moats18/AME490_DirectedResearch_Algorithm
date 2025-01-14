@@ -55,6 +55,11 @@ if test == "Rotating Squares"
     plot([x(6), x(9)], [y(6), y(9)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
 end
 
+if test == "1DBar"
+    plot([x(1), x(2)], [y(1), y(2)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+    plot([x(2), x(3)], [y(2), y(3)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+end
+
 for i = 1:length(labels)
     text(x(i), y(i), labels{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
 end
