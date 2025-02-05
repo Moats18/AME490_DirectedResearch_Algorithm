@@ -7,7 +7,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U,
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Updated Date: 12/06/24
+% Updated Date: 02/05/25
 %
 % Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
@@ -106,13 +106,36 @@ drawnow; % ensures that the updated point is plotted
 pause(0.5);
 end
 
-while err > tol 
+optX = 0; % X has been optimized, does not need to be optimized next iteration
+optX_count = 1; % number of times x was optimized
+check = 0; % used to check if x was optimized consecutively
+max_attempts = 2; % number of times x must be consecutively optimized before breaking loop
 
+min_energy_level = 10^(-2); % arbitrary level chosen -- revise if necessary
+
+while err > tol || E{count} > min_energy_level % optimize until convergence + x optimization does not drop energy
+    
     R = rotationMin_new(x, y, Fj, Tj, J);
     yNew = minY_V2(x, y, Fj, Tj, J, R, A); 
-    xNew = minX_V2(x, yNew, Fj, Tj, J, R, U);
     
-    count = num +  loop;
+    % only optimize X if R <-> Y optimization is complete for the given X
+    if optX
+        disp("Optimizing X...")
+        xNew = minX_V2(x, yNew, Fj, Tj, J, R, U);
+        optX_count = optX_count+1;
+        optX = 0;
+        check = check + 1; % resets to 0 when it doesn't need opt, set to 1 after opt once, set to 2 after consecutive opt
+    else
+        xNew = x;
+        check = 0;
+    end
+
+    if check == max_attempts % if X was optimized consecutively:
+        disp("Not converging...")
+        break
+    end
+    
+    count = num + loop;
     E{count} = 0;
 
     for j = 1:length(J)
@@ -121,7 +144,7 @@ while err > tol
 
         % pos vectors with respect to the center of the panel
         [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), xNew);
-    end 
+    end
 
 
     for j = 1:length(J)
@@ -134,9 +157,16 @@ while err > tol
         
             E{count} = E{count} + norm(yNew(3*k-2:3*k, 1) - cj{j} - R{j}*[rij1; rij2; 0])^2; 
         end
-    end 
+    end
 
     err = abs(E{count}-E{count-1});
+
+    % setting boolean parameter for x optimization check
+    if E{count} > min_energy_level && err < tol % X should be optimized next iteration (high energy, converged):
+        optX = 1;
+    else
+        optX = 0; % x does not need to be optimized next iteration when still converging
+    end
 
     % Updating the values to be used at the beginning of the next loop
     y = yNew;
@@ -164,5 +194,7 @@ end
 Ropt = R;
 yOpt = y;
 xOpt = x;
+
+disp("x optimization count: " + optX_count);
 
 end
