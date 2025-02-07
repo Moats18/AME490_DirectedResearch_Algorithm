@@ -8,27 +8,24 @@
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Updated Date: 12/06/24
-%
-% The initial configuration consists of four panels that share common
-% edges. All of the nine vertices of the panels can be determined based on two user 
-% specified points. Using the symmetry constraints imposed on these two points 
-% results in nine fully defined points
+% Updated Date: 02/05/25
 
-% Initial x-values
+% Initial x-values: see Fig. 1 and 3 from "Continuum Field Theory for the Deformations
+% of Planar Kirigami" Y. Zheng et. al
 s = 0.5;
+xi = asin(0.05);
 x1 = [0; 0];
-x2 = [s; 0];
-x3 = [s; s];
-x4 = [s; 0];
-x5 = [2*s; 0];
-x6 = [2*s; s];
-x7 = [2*s; 2*s];
-x8 = [s; 2*s];
-x9 = [s; s];
-x10 = [s; 2*s];
-x11 = [0; 2*s];
-x12 = [0; s];
+x2 = s*[cos(xi); -sin(xi)];
+x3 = s*[sin(xi)+cos(xi); cos(xi)-sin(xi)];
+x4 = s*[2*sin(xi)+cos(xi); -sin(xi)];
+x5 = s*[2*sin(xi)+2*cos(xi); 0];
+x6 = s*[sin(xi)+2*cos(xi); cos(xi)];
+x7 = s*[2*sin(xi)+2*cos(xi); 2*cos(xi)];
+x8 = s*[2*sin(xi)+cos(xi); 2*cos(xi)+sin(xi)];
+x9 = s*[sin(xi)+cos(xi); cos(xi)+sin(xi)];
+x10 = s*[cos(xi); 2*cos(xi)+sin(xi)];
+x11 = s*[0; 2*cos(xi)];
+x12 = s*[sin(xi); cos(xi)];
 x = [x1; x2; x3; x4; x5; x6; x7; x8; x9; x10; x11; x12];
 
 % Initial y-values
@@ -99,3 +96,4 @@ titles = {'Initial X', 'Initial Y', 'Final X', 'Final Y'};
 vectors = {x, y, xOpt, yOpt};
 visualizeLatticeVec = true;
 plot4vectors3D(vectors, titles, visualizeLatticeVec, "Rotating Squares");
+
