@@ -53,11 +53,66 @@ if test == "Rotating Squares"
     plot([x(3), x(6)], [y(3), y(6)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
     plot([x(7), x(8)], [y(7), y(8)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
     plot([x(6), x(9)], [y(6), y(9)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
-end
 
-if test == "1DBar"
-    plot([x(1), x(2)], [y(1), y(2)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
-    plot([x(2), x(3)], [y(2), y(3)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+    % tessellation
+    tess = 1; % set to 0 to disable tessellated panels
+    if tess
+        l1R_x = x(5)-x(1);
+        l1R_y = y(5)-y(1);
+
+        plot([x(1)+l1R_x, x(2)+l1R_x], [y(1)+l1R_y, y(2)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l1R_x, x(1)+l1R_x], [y(12)+l1R_y, y(1)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l1R_x, x(3)+l1R_x], [y(12)+l1R_y, y(3)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l1R_x, x(9)+l1R_x], [y(12)+l1R_y, y(9)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(3)+l1R_x, x(6)+l1R_x], [y(3)+l1R_y, y(6)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(6)+l1R_x, x(9)+l1R_x], [y(6)+l1R_y, y(9)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(2)+l1R_x, x(3)+l1R_x], [y(2)+l1R_y, y(3)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(3)+l1R_x, x(4)+l1R_x], [y(3)+l1R_y, y(4)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(4)+l1R_x, x(5)+l1R_x], [y(4)+l1R_y, y(5)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(5)+l1R_x, x(6)+l1R_x], [y(5)+l1R_y, y(6)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(6)+l1R_x, x(7)+l1R_x], [y(6)+l1R_y, y(7)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(7)+l1R_x, x(8)+l1R_x], [y(7)+l1R_y, y(8)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(8)+l1R_x, x(9)+l1R_x], [y(8)+l1R_y, y(9)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(9)+l1R_x, x(10)+l1R_x], [y(9)+l1R_y, y(10)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(10)+l1R_x, x(11)+l1R_x], [y(10)+l1R_y, y(11)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(11)+l1R_x, x(12)+l1R_x], [y(11)+l1R_y, y(12)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+    
+        l2R_x = x(10)-x(2);
+        l2R_y = y(10)-y(2);
+        plot([x(1)+l2R_x, x(2)+l2R_x], [y(1)+l2R_y, y(2)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l2R_x, x(1)+l2R_x], [y(12)+l2R_y, y(1)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l2R_x, x(3)+l2R_x], [y(12)+l2R_y, y(3)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l2R_x, x(9)+l2R_x], [y(12)+l2R_y, y(9)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(3)+l2R_x, x(6)+l2R_x], [y(3)+l2R_y, y(6)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(6)+l2R_x, x(9)+l2R_x], [y(6)+l2R_y, y(9)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(2)+l2R_x, x(3)+l2R_x], [y(2)+l2R_y, y(3)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(3)+l2R_x, x(4)+l2R_x], [y(3)+l2R_y, y(4)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(4)+l2R_x, x(5)+l2R_x], [y(4)+l2R_y, y(5)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(5)+l2R_x, x(6)+l2R_x], [y(5)+l2R_y, y(6)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(6)+l2R_x, x(7)+l2R_x], [y(6)+l2R_y, y(7)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(7)+l2R_x, x(8)+l2R_x], [y(7)+l2R_y, y(8)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(8)+l2R_x, x(9)+l2R_x], [y(8)+l2R_y, y(9)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(9)+l2R_x, x(10)+l2R_x], [y(9)+l2R_y, y(10)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(10)+l2R_x, x(11)+l2R_x], [y(10)+l2R_y, y(11)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(11)+l2R_x, x(12)+l2R_x], [y(11)+l2R_y, y(12)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+
+        plot([x(1)+l1R_x+l2R_x, x(2)+l1R_x+l2R_x], [y(1)+l1R_y+l2R_y, y(2)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l1R_x+l2R_x, x(1)+l1R_x+l2R_x], [y(12)+l1R_y+l2R_y, y(1)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l1R_x+l2R_x, x(3)+l1R_x+l2R_x], [y(12)+l1R_y+l2R_y, y(3)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(12)+l1R_x+l2R_x, x(9)+l1R_x+l2R_x], [y(12)+l1R_y+l2R_y, y(9)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(3)+l1R_x+l2R_x, x(6)+l1R_x+l2R_x], [y(3)+l1R_y+l2R_y, y(6)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(6)+l1R_x+l2R_x, x(9)+l1R_x+l2R_x], [y(6)+l1R_y+l2R_y, y(9)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(2)+l1R_x+l2R_x, x(3)+l1R_x+l2R_x], [y(2)+l1R_y+l2R_y, y(3)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(3)+l1R_x+l2R_x, x(4)+l1R_x+l2R_x], [y(3)+l1R_y+l2R_y, y(4)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(4)+l1R_x+l2R_x, x(5)+l1R_x+l2R_x], [y(4)+l1R_y+l2R_y, y(5)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(5)+l1R_x+l2R_x, x(6)+l1R_x+l2R_x], [y(5)+l1R_y+l2R_y, y(6)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(6)+l1R_x+l2R_x, x(7)+l1R_x+l2R_x], [y(6)+l1R_y+l2R_y, y(7)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(7)+l1R_x+l2R_x, x(8)+l1R_x+l2R_x], [y(7)+l1R_y+l2R_y, y(8)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(8)+l1R_x+l2R_x, x(9)+l1R_x+l2R_x], [y(8)+l1R_y+l2R_y, y(9)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(9)+l1R_x+l2R_x, x(10)+l1R_x+l2R_x], [y(9)+l1R_y+l2R_y, y(10)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(10)+l1R_x+l2R_x, x(11)+l1R_x+l2R_x], [y(10)+l1R_y+l2R_y, y(11)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(11)+l1R_x+l2R_x, x(12)+l1R_x+l2R_x], [y(11)+l1R_y+l2R_y, y(12)+l1R_y+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+
 end
 
 for i = 1:length(labels)
