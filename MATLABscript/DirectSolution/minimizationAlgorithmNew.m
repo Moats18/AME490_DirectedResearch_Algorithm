@@ -113,6 +113,8 @@ max_attempts = 2; % number of times x must be consecutively optimized before bre
 
 min_energy_level = 10^(-2); % arbitrary level chosen -- revise if necessary
 
+count = num;
+
 while err > tol || E{count} > min_energy_level % optimize until convergence + x optimization does not drop energy
     
     R = rotationMin_new(x, y, Fj, Tj, J);

@@ -23,8 +23,7 @@ x3 = [2; 0];
 
 % x rigidity constraint matrix 
 U = [-eye(2), zeros(2), eye(2)
-    eye(2), zeros(2), zeros(2)
-    zeros(2), eye(2), zeros(2)];
+    eye(2), zeros(2), zeros(2)];
 
 % constraining the origin and the length of the outer edges of the bar
 A = [-eye(3), zeros(3), eye(3)
@@ -35,8 +34,8 @@ x = [x1; x2; x3];
 
 % Initial y-values
 y1 = [0; 0; 0];
-y2 = [0.75; 1; 0];
-y3 = [1.5; 0; 0];
+y2 = [1; 1; 0];
+y3 = [2; 0; 0];
 
 % final y vector
 y = [y1; y2; y3];
