@@ -7,7 +7,7 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U,
 % Under the Supervision of Dr. Paul Plucinsky
 % Viterbi School of Engineering, Unversity of Southern California 
 %
-% Updated Date: 02/05/25
+% Updated Date: 03/03/25
 %
 % Rigidity Constraints:
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
@@ -31,11 +31,8 @@ function [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U,
 % given rigidity constraints  
 % Ropt: array of rotation matrices for minimizes the elastic energy  
 
-% initial values
-loop = 1; % loop number
-E{1} = 0;
 
-% setting the values of the initial cj and rij vectors
+% initialize cj and rij vectors
 rij = zeros(2*length(Tj), 1, length(J));
 for j = 1:length(J)
     % center of the panel calculation based on initial y vector
@@ -45,6 +42,9 @@ for j = 1:length(J)
     [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), x);
 end 
 
+% initialize energy E{1}
+count = 1;
+E{count} = 0;
 for j = 1:length(J)
     for i = 1:length(Fj(:, :, j))
         k = Fj(:, i, j);
@@ -53,14 +53,13 @@ for j = 1:length(J)
         rij1 = rij_temp(1);
         rij2 = rij_temp(2);
         
-        E{1} = E{1} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*[rij1; rij2; 0])^2; 
+        E{count} = E{count} + norm(y(3*k-2:3*k, 1) - cj{j} - R{j}*[rij1; rij2; 0])^2; 
     end
 end 
 
-% defining the first index that is to be compared in the while loop
-% conditional statement
-num = 2;
-E{num} = 0; 
+% compute the first energy that is to be compared in the while loop (E{2})
+count = count + 1;
+E{count} = 0; 
 
 % initial minimizations
 RiOpt = rotationMin_new(x, y, Fj, Tj, J);
@@ -69,10 +68,10 @@ xNew = minX_V2(x, yNew, Fj, Tj, J, RiOpt, U);
 
 for j = 1:length(J)
     % center of the panel calculation based on initial y vector
-    [cj{j}, ~] = centerOfPanel3D(Fj(:, :, j), y);
+    [cj{j}, ~] = centerOfPanel3D(Fj(:, :, j), yNew);
 
     % pos vectors with respect to the center of the panel
-    [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), x);
+    [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), xNew);
 end 
 
 for j = 1:length(J)
@@ -83,7 +82,7 @@ for j = 1:length(J)
         rij1 = rij_temp(1);
         rij2 = rij_temp(2);
         
-        E{num} = E{num} + norm(yNew(3*k-2:3*k, 1) - cj{j} - RiOpt{j}*[rij1; rij2; 0])^2; 
+        E{count} = E{count} + norm(yNew(3*k-2:3*k, 1) - cj{j} - RiOpt{j}*[rij1; rij2; 0])^2; 
     end
 end 
 
@@ -91,55 +90,53 @@ R = RiOpt;
 y = yNew;
 x = xNew;
 
-err = abs(E{num}-E{num-1});
+err = abs(E{count}-E{count-1});
 
-% while loop that converges on a minimized energy value
+% plot energy over iterations
 figure
 xlabel("Iteration Number [#]")
-ylabel("Energy [m^2]");
-title("Minimization Algorithm");
+ylabel("Energy [L^2]");
+title("Energy Minimization");
 
 hold on
-for i= 1:length(E)
-scatter(i, E{i}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+for i = 1:length(E)
+scatter(i-1, E{i}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
 drawnow; % ensures that the updated point is plotted
 pause(0.5);
 end
 
-optX = 0; % X has been optimized, does not need to be optimized next iteration
-optX_count = 1; % number of times x was optimized
-check = 0; % used to check if x was optimized consecutively
+% initialize while loop parameters
+optX = 0; % X needs (not) to be optimized this iteration
+optX_count = 1; % counter for # of times x was optimized
+check = 0; % checker for if x was optimized consecutively
 max_attempts = 2; % number of times x must be consecutively optimized before breaking loop
+finalLoop = 0; % checker for if x is converged and R <-> y must be optimized for final
+converged = 0; % checker for if R, y, and x have been optimized (R <-> y is complete once finalLoop = 1)
 
-min_energy_level = 10^(-2); % arbitrary level chosen -- revise if necessary
-
-count = num;
-
-while err > tol || E{count} > min_energy_level % optimize until convergence + x optimization does not drop energy
+% optimization loop
+while err > tol || converged == 0 % optimize until convergence in R, y, and x
+    count = count + 1;
+    E{count} = 0;
     
-    R = rotationMin_new(x, y, Fj, Tj, J);
-    yNew = minY_V2(x, y, Fj, Tj, J, R, A); 
-    
-    % only optimize X if R <-> Y optimization is complete for the given X
+    % only optimize X if R <-> x optimization is converged for the given x
     if optX
-        disp("Optimizing X...")
-        xNew = minX_V2(x, yNew, Fj, Tj, J, R, U);
+        xNew = minX_V2(x, y, Fj, Tj, J, R, U);
+        yNew = y;
         optX_count = optX_count+1;
-        optX = 0;
-        check = check + 1; % resets to 0 when it doesn't need opt, set to 1 after opt once, set to 2 after consecutive opt
-    else
+        check = check + 1; % resets to 0 when x doesn't need opt, set to 1 after opt once, set to 2 after consecutive opt
+    else % optimize R and y when not converged
+        R = rotationMin_new(x, y, Fj, Tj, J);
+        yNew = minY_V2(x, y, Fj, Tj, J, R, A); 
         xNew = x;
         check = 0;
     end
 
-    if check == max_attempts % if X was optimized consecutively:
+    if check == max_attempts % if X was optimized consecutively max_attempts # of times:
         disp("Not converging...")
         break
     end
-    
-    count = num + loop;
-    E{count} = 0;
 
+    % compute cj and rij vectors
     for j = 1:length(J)
         % center of the panel calculation based on y vector
         [cj{j}, ~] = centerOfPanel3D(Fj(:, :, j), yNew);
@@ -148,7 +145,7 @@ while err > tol || E{count} > min_energy_level % optimize until convergence + x 
         [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), xNew);
     end
 
-
+    % compute energy for iteration
     for j = 1:length(J)
         for i = 1:length(Fj(:, :, j))
             k = Fj(:, i, j); 
@@ -163,11 +160,18 @@ while err > tol || E{count} > min_energy_level % optimize until convergence + x 
 
     err = abs(E{count}-E{count-1});
 
-    % setting boolean parameter for x optimization check
-    if E{count} > min_energy_level && err < tol % X should be optimized next iteration (high energy, converged):
+    % setting boolean parameters for x optimization check
+    if optX == 0 && err < tol % x should be optimized next iteration (R <-> y loop converged):
         optX = 1;
-    else
-        optX = 0; % x does not need to be optimized next iteration when still converging
+        if finalLoop % energy has converged for R, y, and x minimizations
+            disp("Converged!")
+            converged = 1;
+        end
+    elseif optX == 1 && err < tol % R <-> y should be optimized one last time (x converged):
+        optX = 0;
+        finalLoop = 1;
+    else % continue optimizing R <-> y
+        optX = 0;
     end
 
     % Updating the values to be used at the beginning of the next loop
@@ -176,7 +180,7 @@ while err > tol || E{count} > min_energy_level % optimize until convergence + x 
 
     % showing the results of the algorithm in real time
     disp("-------------------------------------")
-    disp("Iteration number: " + num2str(loop));
+    disp("Iteration number: " + num2str(count));
     disp("Total Energy Calculations: " + num2str(count));
     disp("-------------------------------------")
     disp("Previous Energy Value: " + num2str(E{count-1}));
@@ -185,11 +189,10 @@ while err > tol || E{count} > min_energy_level % optimize until convergence + x 
     
     % plotting the results of the algorithm in real time
     hold on
-    scatter(count, E{count}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
-    plot(count, E{count});
+    scatter(count-1, E{count}, 'filled', 'MarkerFaceColor', [0.10, 0.60, 0.9]);
+    plot(count-1, E{count});
     drawnow; % ensures that the updated point is plotted
     pause(0.1); %pausing for 1/2 of a second
-    loop = loop + 1;
     hold off
 end
 
