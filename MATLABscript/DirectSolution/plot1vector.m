@@ -77,8 +77,8 @@ if test == "Rotating Squares"
         plot([x(10)+l1R_x, x(11)+l1R_x], [y(10)+l1R_y, y(11)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
         plot([x(11)+l1R_x, x(12)+l1R_x], [y(11)+l1R_y, y(12)+l1R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
     
-        l2R_x = x(10)-x(2);
-        l2R_y = y(10)-y(2);
+        l2R_x = x(11)-x(1);
+        l2R_y = y(11)-y(1);
         plot([x(1)+l2R_x, x(2)+l2R_x], [y(1)+l2R_y, y(2)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
         plot([x(12)+l2R_x, x(1)+l2R_x], [y(12)+l2R_y, y(1)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
         plot([x(12)+l2R_x, x(3)+l2R_x], [y(12)+l2R_y, y(3)+l2R_y], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
