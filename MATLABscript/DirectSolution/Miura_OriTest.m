@@ -112,21 +112,8 @@ visualizeLatticeVec = true;
 
 plot4vectors3D(vectors, titles, visualizeLatticeVec, "Miura");
 
-%% Tessellating Functionality
-
-l1 = y3-y1;
-l2 = y7-y1;
-n = 0;
-yTess = tessellate3D(y, l1, l2, n);
-yOptTess = tessellate3D(yOpt, l1, l2, n);
-
-l1 = x3-x1;
-l2 = x7-x1;
-xTess = tessellate2D(x, l1, l2, n);
-xOptTess = tessellate2D(xOpt, l1, l2, n);
-
 % Define relative output directory (inside the current script folder)
-outputDir = fullfile(pwd, 'TessellationData');
+outputDir = fullfile(pwd, 'Plots_Miura');
 
 % Create the directory if it does not exist
 if ~exist(outputDir, 'dir')
@@ -134,9 +121,7 @@ if ~exist(outputDir, 'dir')
 end
 
 % Save data to CSV files in the specified relative directory
-writematrix(yTess, fullfile(outputDir, 'yTess.csv'));
-writematrix(yOptTess, fullfile(outputDir, 'yOptTess.csv'));
-writematrix(xTess, fullfile(outputDir, 'xTess.csv'));
-writematrix(xOptTess, fullfile(outputDir, 'xOptTess.csv'));
-
-scatter(xOptTess(:, 1), xOptTess(:, 2));
+writematrix(y, fullfile(outputDir, 'y.csv'));
+writematrix(yOpt, fullfile(outputDir, 'yOpt.csv'));
+writematrix(x, fullfile(outputDir, 'x.csv'));
+writematrix(xOpt, fullfile(outputDir, 'xOpt.csv'));

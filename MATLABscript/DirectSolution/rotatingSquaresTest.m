@@ -97,3 +97,16 @@ vectors = {x, y, xOpt, yOpt};
 visualizeLatticeVec = true;
 plot4vectors3D(vectors, titles, visualizeLatticeVec, "Rotating Squares");
 
+% Define relative output directory (inside the current script folder)
+outputDir = fullfile(pwd, 'Plots_Rotated_Squares');
+
+% Create the directory if it does not exist
+if ~exist(outputDir, 'dir')
+    mkdir(outputDir);
+end
+
+% Save data to CSV files in the specified relative directory
+writematrix(y, fullfile(outputDir, 'y.csv'));
+writematrix(yOpt, fullfile(outputDir, 'yOpt.csv'));
+writematrix(x, fullfile(outputDir, 'x.csv'));
+writematrix(xOpt, fullfile(outputDir, 'xOpt.csv'));
