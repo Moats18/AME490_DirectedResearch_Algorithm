@@ -16,7 +16,7 @@
 
 % Initial x-values
 s = 0.5;
-gamma = pi/6;
+gamma = pi/3;
 x1 = [0; 0];
 x2 = [s*cos(gamma); s*sin(gamma)];
 x3 = [2*s*cos(gamma); 0];
@@ -30,7 +30,7 @@ x = [x1; x2; x3; x4; x5; x6; x7; x8; x9];
 
 % First, some useful parameters of the Miura-Ori fold:
 s = 0.5;
-theta = pi/6;
+theta = pi/4;
 lambda = 1;
 H = s*sin(theta)*sin(gamma);
 S = s*cos(theta)*tan(gamma)/sqrt(1+cos(theta)^2*tan(gamma)^2);
@@ -102,7 +102,7 @@ for j = 1:length(J)
 end
 
 % determine the initial tolerance for minimization
-tol = 10^(-5);
+tol = 10^(-3);
 
 [yOpt, xOpt, Ropt] = minimizationAlgorithmNew(x, y, Fj, Tj, J, R, A, U, tol);
 
@@ -111,3 +111,32 @@ vectors = {x, y, xOpt, yOpt};
 visualizeLatticeVec = true;
 
 plot4vectors3D(vectors, titles, visualizeLatticeVec, "Miura");
+
+%% Tessellating Functionality
+
+l1 = y3-y1;
+l2 = y7-y1;
+n = 0;
+yTess = tessellate3D(y, l1, l2, n);
+yOptTess = tessellate3D(yOpt, l1, l2, n);
+
+l1 = x3-x1;
+l2 = x7-x1;
+xTess = tessellate2D(x, l1, l2, n);
+xOptTess = tessellate2D(xOpt, l1, l2, n);
+
+% Define relative output directory (inside the current script folder)
+outputDir = fullfile(pwd, 'TessellationData');
+
+% Create the directory if it does not exist
+if ~exist(outputDir, 'dir')
+    mkdir(outputDir);
+end
+
+% Save data to CSV files in the specified relative directory
+writematrix(yTess, fullfile(outputDir, 'yTess.csv'));
+writematrix(yOptTess, fullfile(outputDir, 'yOptTess.csv'));
+writematrix(xTess, fullfile(outputDir, 'xTess.csv'));
+writematrix(xOptTess, fullfile(outputDir, 'xOptTess.csv'));
+
+scatter(xOptTess(:, 1), xOptTess(:, 2));

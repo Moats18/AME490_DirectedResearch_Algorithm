@@ -64,7 +64,7 @@ for i = 1:N % vertices
 end
 
 % remove redundant vertices
-x_tessellated = unique(x_tessellated, 'rows');
+%x_tessellated = unique(x_tessellated, 'rows');
 
 %{
 % reorganize x_tessellated to original column vector structure
