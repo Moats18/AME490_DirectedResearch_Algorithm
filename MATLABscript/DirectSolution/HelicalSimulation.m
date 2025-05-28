@@ -15,7 +15,7 @@ end
 
 tau1 = 0.5;
 e1 = [1,0,0]';
-z = [0,0,1]';
+z = [0,1,0]';
 theta1 = pi/4;
 
 % discreteness condition 
@@ -34,7 +34,7 @@ T2 = tau2 * e1 + (I - R2) * z;
 % Transformation
 n = length(x);
 x_current = x;
-numSteps = 20;
+numSteps = 5;
 
 % Visualization setup
 figure;
@@ -83,7 +83,7 @@ for i = 1:numSteps
               'Color', colors(i,:), 'LineWidth', 1);
 
     % Draw lines between corresponding layers 
- %{  
+ %{
     for j = [1, 2, 5, 6]
         plot3([x_prev(j,1), x_next(j,1)], ...
               [x_prev(j,2), x_next(j,2)], ...

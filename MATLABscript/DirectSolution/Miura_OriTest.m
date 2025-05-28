@@ -53,7 +53,7 @@ y8 = lambda*[S; 2*L+V; 0];
 y9 = lambda*[2*S; 2*L; 0];
 y = [y1; y2; y3; y4; y5; y6; y7; y8; y9];
 
-% x rigidity constraint matrix (4x12) of (2x2) = (8x24)
+% x rigidity constraint matrix (7x9) of (2x2) = (14x18)
 U = [eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2);
     -eye(2), zeros(2), eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2);
      zeros(2), zeros(2), zeros(2), eye(2), zeros(2), -eye(2), zeros(2), zeros(2), zeros(2);
@@ -62,7 +62,7 @@ U = [eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2
      zeros(2), -eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), eye(2), zeros(2);
      zeros(2), zeros(2), -eye(2), zeros(2), zeros(2), zeros(2), zeros(2), zeros(2), eye(2);];
     
-% x rigidity constraint matrix (4x12) of (3x3) = (12x36)
+% x rigidity constraint matrix (7x9) of (3x3) = (21x27)
 A = [eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3);
     -eye(3), zeros(3), eye(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3), zeros(3);
      zeros(3), zeros(3), zeros(3), eye(3), zeros(3), -eye(3), zeros(3), zeros(3), zeros(3);
