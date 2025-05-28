@@ -14,8 +14,8 @@ for i = 1:p
 end
 
 tau1 = 0.5;
-e1 = [0,0,1]';
-z = [1,0,0]';
+e1 = [1,0,0]';
+z = [0,0,1]';
 theta1 = pi/4;
 
 % discreteness condition 
@@ -24,8 +24,8 @@ theta2 = 2*pi/q - p/q*theta1;
 I = eye(3,3);
 
 % Rotation matrices
-R1 = [cos(theta1), -sin(theta1), 0; sin(theta1), cos(theta1), 0; 0, 0, 1];
-R2 = [cos(theta2), -sin(theta2), 0; sin(theta2), cos(theta2), 0; 0, 0, 1];
+R1 = [1, 0, 0; 0, cos(theta1), -sin(theta1); 0, sin(theta1), cos(theta1)];
+R2 = [1, 0, 0; 0, cos(theta2), -sin(theta2); 0, sin(theta2), cos(theta2)];
 
 % Translation vectors
 T1 = tau1 * e1 + (I - R1) * z;
@@ -81,9 +81,9 @@ for i = 1:numSteps
               [x_current(1,2), x_current(5,2)], ...
               [x_current(1,3), x_current(5,3)], ...
               'Color', colors(i,:), 'LineWidth', 1);
-    
+
     % Draw lines between corresponding layers 
-   
+ %{  
     for j = [1, 2, 5, 6]
         plot3([x_prev(j,1), x_next(j,1)], ...
               [x_prev(j,2), x_next(j,2)], ...
