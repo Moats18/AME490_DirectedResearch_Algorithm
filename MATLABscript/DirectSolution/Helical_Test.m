@@ -15,42 +15,43 @@
 % panels and the resultant energy calculation.
 
 % Initial x-values
-s = 0.5;
-gamma = pi/3;
 x1 = [0; 0];
-x2 = [s*cos(gamma); s*sin(gamma)];
-x3 = [2*s*cos(gamma); 0];
-x4 = [2*s*cos(gamma); s];
-x5 = [s*cos(gamma); s*sin(gamma)+s];
-x6 = [0; s];
-x7 = [0; 2*s];
-x8 = [s*cos(gamma); s*sin(gamma)+2*s];
-x9 = [2*s*cos(gamma); 2*s];
+x2 = [1; 0];
+x3 = [2; 0];
+x4 = [2; 1];
+x5 = [1; 1];
+x6 = [0; 1];
+x7 = [0; 2];
+x8 = [1; 2];
+x9 = [2; 2];
 x = [x1; x2; x3; x4; x5; x6; x7; x8; x9];
 
-% First, some useful parameters of the Miura-Ori fold:
-s = 0.5;
-theta = pi/4;
-lambda = 1;
-H = s*sin(theta)*sin(gamma);
-S = s*cos(theta)*tan(gamma)/sqrt(1+cos(theta)^2*tan(gamma)^2);
-L = s*sqrt(1-sin(theta)^2*sin(gamma)^2);
-V = s*1/sqrt(1+cos(theta)^2*tan(gamma)^2);
-eta = atan(cos(theta)*tan(gamma));
-psi = asin(sin(theta)*sin(gamma));
-phi = asin(sin(eta)/sin(gamma));
-o = H/tan(theta);
+p = 6;
+q = 4;
+
+tau1 = 0.5;
+e1 = [0,0,1]';
+z = [0,1,0]';
+theta1 = pi/4;
+
+[T1, T2, R1, R2] = calc_heli(q, p, theta1, tau1, z, e1);
+
 
 % Initial y-values
-y1 = lambda*[0; 0; 0];
-y2 = lambda*[S; s*cos(eta); 0];
-y3 = lambda*[2*S; 0; 0];
-y4 = lambda*[2*S; L; H];
-y5 = lambda*[S; 2*L; H];
-y6 = lambda*[0; L; H];
-y7 = lambda*[0; 2*L; 0];
-y8 = lambda*[S; 2*L+V; 0];
-y9 = lambda*[2*S; 2*L; 0];
+y1 = [0; 0; 0];
+y3 = R1*y1 + T1;
+y7 = R2*y1 + T2;
+y9 = R2*y3 + T2;
+
+% average of corners
+y2 = (y1+y3)/2;
+y4 = (y3+y9)/2;
+y6 = (y1+y7)/2;
+y8 = (y7+y9)/2;
+
+%average of middle points
+y5 = (y6+y4)/2;
+
 y = [y1; y2; y3; y4; y5; y6; y7; y8; y9];
 
 % symmetry constraints for reference
@@ -110,18 +111,4 @@ titles = {'Initial X', 'Initial Y', 'Final X', 'Final Y'};
 vectors = {x, y, xOpt, yOpt};
 visualizeLatticeVec = true;
 
-plot4vectors3D(vectors, titles, visualizeLatticeVec, "Miura");
-
-% Define relative output directory (inside the current script folder)
-outputDir = fullfile(pwd, 'Plots_Miura');
-
-% Create the directory if it does not exist
-if ~exist(outputDir, 'dir')
-    mkdir(outputDir);
-end
-
-% Save data to CSV files in the specified relative directory
-writematrix(y, fullfile(outputDir, 'y.csv'));
-writematrix(yOpt, fullfile(outputDir, 'yOpt.csv'));
-writematrix(x, fullfile(outputDir, 'x.csv'));
-writematrix(xOpt, fullfile(outputDir, 'xOpt.csv'));
+plot4vectors3D(vectors, titles, visualizeLatticeVec, "Helical");
