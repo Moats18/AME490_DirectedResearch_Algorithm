@@ -56,7 +56,7 @@ if test == "Miura"
 
 end
 
-if test == "Miura4x4"
+if test == "Miura4x4" || test == "Miura4x4_diagonal1" || test == "Miura4x4_diagonal2"
     
     plot([x(1), x(10)], [y(1), y(10)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
     plot([x(2), x(9)], [y(2), y(9)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
@@ -74,6 +74,22 @@ if test == "Miura4x4"
     plot([x(17), x(24)], [y(17), y(24)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
     plot([x(18), x(23)], [y(18), y(23)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
     plot([x(19), x(22)], [y(19), y(22)],'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+
+    if test == "Miura4x4_diagonal1" || test == "Miura4x4_diagonal2"
+        plot([x(1), x(9)], [y(1), y(9)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(9), x(13)], [y(9), y(13)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(13), x(17)], [y(13), y(17)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        plot([x(17), x(25)], [y(17), y(25)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+
+        if test == "Miura4x4_diagonal2"
+            plot([x(3), x(7)], [y(3), y(7)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+            plot([x(7), x(15)], [y(7), y(15)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+
+            plot([x(11), x(19)], [y(11), y(19)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+            plot([x(19), x(23)], [y(19), y(23)], 'Color', [0 0.4470 0.7410], 'LineWidth', 0.5);
+        end
+        
+    end
 
     %visualization of the lattice vectors 
     if vis == 1
