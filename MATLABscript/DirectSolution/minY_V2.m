@@ -9,87 +9,83 @@ function yMin = minY_V2(x, y, Fj, Tj, J, R, A)
 % A: matrix of the rigidity constraints that satisfies the equation: Ay = e  
 %
 % Indexing Inputs:
-% Tj: a cell array of the set of all x's within each panel(the jth panel
+% x: x coordinate 2-D array (2*n by 1 where n is the number of vertices)
+% y: y coordinate 2-D array (3*n by 1 where n is the number of vertices)
+% Tj: a cell array of the set of all x's within each panel (the jth panel
 % corresponds to the jth row)
-% x: x coordinate 2-D array (2*n by 1 where n is the number of indices)
-% Fj: a 2D array of the set of all y's within each panel (the jth panel
+% Fj: a column cell array of the set of all y's within each panel (the jth panel
 % corresponds to the jth row)
-% y: y coordinate 2-D array (3*n by 1 where n is the number of indices)
-% J: the set of all panels
+% J: the labeling set of all panels
 % R: a cell array of all of the rotation matrices for each panel
 %
 % Outputs
 % yMin: y coordinate 2-D array that minizes the elastic energy based on
 % given rigidity constraints   
-% Define the matrices that allow the 3D coord vector yi to be converted to
-% a list of coord vectors called y
 
-% creating the k matrix
-n = length(y);
-lenJ = length(J);
-nn = length(Fj);
+% Initialize relevant parameters
+n = length(y); % number of vertices * 3
+lenJ = length(J); % number of panels
+chi = cell(n/3,1); % cell array mapping column Y to each vertex y
 
-for i = 1:(n/3)
-    x1 = zeros(3, n);
-    x1(1:3, 3*i-2:3*i) = eye(3);
-    xM{i} = x1;
+for k = 1:(n/3)
+    chi_k = zeros(3, n);
+    chi_k(1:3, 3*k-2:3*k) = eye(3); % mapping is identity for the 3 desired coordinate values
+    chi{k} = chi_k;
 end 
 
 % Defining the matrix that allows the vector y to be factored out
-% Aij{1, 1} is a 3 by n matrix
+% Sij{i, j} is a 3 by n matrix, has i rows where i is the maximum number of
+% vertices in a panel for the given configuration, and j is the number of
+% panels
 
+Sij = cell(max(cellfun('size', Fj, 2)), lenJ);
 for j = 1:lenJ
-    l = length(Fj(:, :, j));
-    sum = (1/l)*calcMatrixSum_y(xM, Fj(:, :, j));
-    for i = 1:length(Fj(:, :, j))
-        k = Fj(:, i, j);
-        Aij{i, j} = xM{k} - sum;
+    l = length(Fj{j}); % number of vertices in the j-th panel
+    sum = (1/l)*calcMatrixSum_y(chi, Fj{j});
+    for i = 1:length(Fj{j})
+        k = Fj{j}(i); % vertex k
+        Sij{i, j} = chi{k} - sum;
     end
 end
 
-% pre-allocating the size of the kMatrix (3n by 3n)
-kMatrix = zeros(n, n);
+% pre-allocating the size of B (3n by 3n)
+B = zeros(n, n);
 
 for j = 1:lenJ
-    for i = 1:length(Fj(:, :, j))
-        kMatrix = kMatrix + 2*Aij{i, j}'*Aij{i, j};
+    for i = 1:length(Fj{j})
+        B = B + 2*Sij{i, j}'*Sij{i, j};
     end
 end
 
-%determining the N matrix
-nMatrix = null(A);
+% determining the N matrix
+N = null(A);
 
 % pos vectors with respect to the center of the panel for all panels
-rij = zeros(2*nn, 1, lenJ);
-
+rij = cell(lenJ); % j cells with the j-th cell containing 
 for j = 1:lenJ
-    [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), x);
+    [~, rij{j}] = centerOfPanel2D(Tj{j}, x);
 end 
 
-% calculation of the negative b vector
-bVector = zeros(n, 1);
+% calculation of b
+b = zeros(n, 1);
 for j = 1:lenJ
-    for i = 1:length(Fj(:, :, j))
-        %(rij(3*i-2:3*i, 1, j)'*R{j}'*Aij{i, j})'
-        r_temp = rij(2*i-1:2*i, 1, j);
+    for i = 1:length(Fj{j})
+        r_temp = rij{j}(2*i-1:2*i);
         rij1 = r_temp(1);
         rij2 = r_temp(2);
-        bVector = bVector + ([rij1 rij2 0]*R{j}'*Aij{i, j})'; 
+        b = b + ([rij1 rij2 0]*R{j}'*Sij{i, j})'; 
     end
 end
-
-% B is a 1 by 3*n vector 
-B = -2*bVector; 
+b = 2*b;
 
 % calculation of bTilde
-bTilde = -1 * (nMatrix'*kMatrix*y + nMatrix'*B);
+bTilde = N'*b - N'*B*y;
 
 % determining the perturbation method
 bTilde(abs(bTilde)<1e-5)=0;
 
-yTilde = pinv(nMatrix'*kMatrix*nMatrix)*bTilde;
+yTilde = pinv(N'*B*N)*bTilde;
 
-yMin = y + nMatrix*yTilde;
+yMin = y + N*yTilde;
 
 end
-

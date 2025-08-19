@@ -20,14 +20,15 @@ function Ropt = rotationMin_new(x, y, Fj, Tj, J)
 % Ropt: a cell array of the rotation matrices that minimize the elastic energy 
 
 % setting the values of the initial cj and rij vectors
-rij = zeros(2*length(Tj), 1, length(J));
 
+cj = cell(length(J));
+rij = cell(length(J));
 for j = 1:length(J)
     % center of the panel calculation based on initial y vector
-    [cj{j}, ~] = centerOfPanel3D(Fj(:, :, j), y);
+    [cj{j}, ~] = centerOfPanel3D(Fj{j}, y);
 
     % pos vectors with respect to the center of the panel
-    [~, rij(:, :, j)] = centerOfPanel2D(Tj(:, :, j), x);
+    [~, rij{j}] = centerOfPanel2D(Tj{j}, x);
 end 
 
 % initialize rotation matrix
@@ -36,15 +37,15 @@ Ml = zeros(4, 4, length(J)); % Ml = sum of sym(M_kl) over k in panel j
 % construct the matrix to optimize over
 for j = 1:length(J)
 
-    for i = 1:length(Fj(:, :, j))
+    for i = 1:length(Fj{j})
 
-       k = Fj(:, i, j);
+       k = Fj{j}(i);
        ckl = y(3*k-2:3*k, 1) - cj{j}; 
        ckl_cross = [0           -ckl(3)    ckl(2);
                     ckl(3)      0          -ckl(1);
                     -ckl(2)     ckl(1)     0];
        
-       r_temp = rij(2*i-1:2*i, 1, j);
+       r_temp = rij{j}(2*i-1:2*i);
        r = [r_temp(1); r_temp(2); 0]; % convert to R3 for SO3 rotation compatibility
 
        rkl_cross = [0       -r(3) r(2);
