@@ -19,22 +19,20 @@ function [T1, T2, R1, R2] = calc_heli(p, q, theta1, tau1, z, e)
 % R2: the rotation operator in SO(3) used in g2
 
 I = eye(3,3); % working in R3
+ecross = [0,     -e(3),  e(2);
+          e(3),  0,      -e(1);
+          -e(2), e(1),   0];
 
 % enforcing the discreteness conditions
 tau2 = -p/q*tau1; % p*tau1 = - q*tau2
 theta2 = (2*pi - p*theta1)/q; % p*theta1 + q*theta2 = 2*pi
 
-% Rotation matrices where e is the z-axis
-R1 = [cos(theta1), -sin(theta1), 0; 
-      sin(theta1), cos(theta1), 0;
-      0, 0, 1];
-R2 = [cos(theta2), -sin(theta2), 0;
-      sin(theta2), cos(theta2), 0;
-      0, 0, 1];
+% Rotation matrices about axis e
+R1 = I*cos(theta1) + (1-cos(theta1))*e*e' + sin(theta1)*ecross;
+R2 = I*cos(theta2) + (1-cos(theta2))*e*e' + sin(theta2)*ecross;
 
 % Translation operators
 T1 = tau1 * e + (I - R1) * z;
 T2 = tau2 * e + (I - R2) * z;
 
 end
-
